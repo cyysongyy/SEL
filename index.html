@@ -713,15 +713,58 @@ function save(){localStorage.setItem('sel2_state',JSON.stringify(S))}
 
 // ── TTS SPEECH ──
 let _speaking=false;
+let _voices=[];
+
+// load voices (async on Chrome)
+function loadVoices(){
+  _voices=speechSynthesis.getVoices();
+}
+loadVoices();
+if(speechSynthesis.onvoiceschanged!==undefined){
+  speechSynthesis.onvoiceschanged=loadVoices;
+}
+
+function pickVoice(lang){
+  if(!_voices.length) _voices=speechSynthesis.getVoices();
+  const isZh=lang==='zh-TW'||lang==='zh-CN'||lang==='zh';
+  const isEn=lang==='en-US'||lang==='en-GB'||lang==='en';
+
+  if(isZh){
+    // prefer zh-TW, then zh-CN, then any zh
+    return _voices.find(v=>v.lang==='zh-TW')
+      || _voices.find(v=>v.lang==='zh-CN')
+      || _voices.find(v=>v.lang.startsWith('zh'))
+      || null;
+  }
+  if(isEn){
+    // prefer en-US, then en-GB, then any en
+    return _voices.find(v=>v.lang==='en-US')
+      || _voices.find(v=>v.lang==='en-GB')
+      || _voices.find(v=>v.lang.startsWith('en'))
+      || null;
+  }
+  return null;
+}
+
 function speak(text,lang){
-  if(!window.speechSynthesis)return;
-  lang=lang||(document.body.classList.contains('lang-en')?'en-US':'zh-TW');
+  if(!window.speechSynthesis||!text)return;
+  if(!lang) lang=isEN()?'en-US':'zh-TW';
   speechSynthesis.cancel();
   const u=new SpeechSynthesisUtterance(text);
-  u.lang=lang;u.rate=lang==='zh-TW'?0.88:0.9;u.pitch=1.1;
-  u.onend=()=>{_speaking=false;document.querySelectorAll('.speak-btn.speaking').forEach(b=>{b.classList.remove('speaking');b.textContent='🔊';});};
-  speechSynthesis.speak(u);_speaking=true;
+  u.lang=lang;
+  const voice=pickVoice(lang);
+  if(voice) u.voice=voice;
+  u.rate=(lang==='zh-TW'||lang.startsWith('zh'))?0.85:0.9;
+  u.pitch=1.05;
+  u.volume=1;
+  u.onend=()=>{
+    _speaking=false;
+    document.querySelectorAll('.speak-btn.speaking').forEach(b=>{b.classList.remove('speaking');b.textContent='🔊';});
+  };
+  speechSynthesis.speak(u);
+  _speaking=true;
 }
+
 function speakBtn(el,text,lang){
   document.querySelectorAll('.speak-btn.speaking').forEach(b=>{b.classList.remove('speaking');b.textContent='🔊';});
   if(_speaking){speechSynthesis.cancel();_speaking=false;return;}
