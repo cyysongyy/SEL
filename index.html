@@ -950,32 +950,77 @@ function renderEmotionWheel(c,aid){
       sel=i;
       if(!S.emote.includes(i)){S.emote.push(i);save();}
       showEdt(em);
-      const isEn=document.body.classList.contains('lang-en');
-      speak(isEn?em.en:em.n, isEn?'en-US':'zh-TW');
+      // auto-speak: Chinese then English
+      speechSynthesis.cancel();
+      const u1=new SpeechSynthesisUtterance(em.n);u1.lang='zh-TW';u1.rate=0.9;
+      const u2=new SpeechSynthesisUtterance(em.en);u2.lang='en-US';u2.rate=0.85;
+      speechSynthesis.speak(u1);
+      u1.onend=()=>setTimeout(()=>speechSynthesis.speak(u2),300);
     };
     g.appendChild(d);
   });
   function showEdt(em){
     const box=document.getElementById('edt-box');
     box.innerHTML=`<div class="edt">
-      <div style="display:flex;align-items:center;justify-content:space-between">
-        <h3>${em.e} <span class="zh">${em.n}</span> <span class="en-sub">${em.en}</span></h3>
-        <button class="speak-btn" onclick="speakBtn(this, document.body.classList.contains('lang-en')?'${em.en}, ${em.bodyEn}, ${em.tipEn}':'${em.n}，${em.body}，${em.tip}')">🔊</button>
-      </div>
-      <div class="edt-sec"><div class="edt-lbl"><span class="zh">身體感受</span><span class="en-sub">Body feelings</span></div>
-        <div class="edt-txt zh">🫀 ${em.body}</div>
-        <div class="edt-txt en-sub">🫀 ${em.bodyEn}</div></div>
-      <div class="edt-sec"><div class="edt-lbl"><span class="zh">小撇步</span><span class="en-sub">Tip</span></div>
-        <div class="edt-txt zh">💡 ${em.tip}</div>
-        <div class="edt-txt en-sub">💡 ${em.tipEn}</div></div>
-      <div class="edt-sec"><div class="edt-lbl"><span class="zh">應對方法</span><span class="en-sub">What to do</span></div>
-        <div class="edt-txt">🛠️ ${em.strat}</div></div>
-      <div class="edt-sec"><div class="edt-lbl"><span class="zh">你多常有這種感覺？</span><span class="en-sub">How often do you feel this?</span></div>
-        <div class="e-rate"><span style="font-size:.78rem;color:#888" class="zh">很少</span><span style="font-size:.78rem;color:#888" class="en-sub">Rarely</span>
-          <div>${[1,2,3,4,5].map(n=>`<span class="er-s" data-n="${n}">⭐</span>`).join('')}</div>
-          <span style="font-size:.78rem;color:#888" class="zh">很常</span><span style="font-size:.78rem;color:#888" class="en-sub">Often</span>
+      <!-- 標題 + 雙語發音 -->
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+        <h3 style="font-size:1.1rem">${em.e} <span class="zh">${em.n}</span> <span class="en-sub" style="font-size:.95rem">${em.en}</span></h3>
+        <div style="display:flex;gap:6px;margin-left:auto">
+          <button class="speak-btn" style="background:#FFF3F8;border-color:#FF6B9D;color:#FF6B9D;font-weight:700"
+            onclick="speak('${em.n}','zh-TW')">🔊 中</button>
+          <button class="speak-btn" style="background:#F0F6FF;border-color:#667EEA;color:#667EEA;font-weight:700"
+            onclick="speak('${em.en}','en-US')">🔊 EN</button>
         </div>
       </div>
+
+      <!-- 身體感受 -->
+      <div class="edt-sec">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+          <div class="edt-lbl"><span class="zh">身體感受</span><span class="en-sub">Body feelings</span></div>
+          <div style="display:flex;gap:5px">
+            <button class="speak-btn" style="padding:2px 7px;font-size:.72rem;border-color:#FF6B9D;color:#FF6B9D"
+              onclick="speak('${em.body}','zh-TW')">🔊 中</button>
+            <button class="speak-btn" style="padding:2px 7px;font-size:.72rem;border-color:#667EEA;color:#667EEA"
+              onclick="speak('${em.bodyEn}','en-US')">🔊 EN</button>
+          </div>
+        </div>
+        <div class="edt-txt zh">🫀 ${em.body}</div>
+        <div class="edt-txt en-sub">🫀 ${em.bodyEn}</div>
+      </div>
+
+      <!-- 小撇步 -->
+      <div class="edt-sec">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+          <div class="edt-lbl"><span class="zh">小撇步</span><span class="en-sub">Tip</span></div>
+          <div style="display:flex;gap:5px">
+            <button class="speak-btn" style="padding:2px 7px;font-size:.72rem;border-color:#FF6B9D;color:#FF6B9D"
+              onclick="speak('${em.tip}','zh-TW')">🔊 中</button>
+            <button class="speak-btn" style="padding:2px 7px;font-size:.72rem;border-color:#667EEA;color:#667EEA"
+              onclick="speak('${em.tipEn}','en-US')">🔊 EN</button>
+          </div>
+        </div>
+        <div class="edt-txt zh">💡 ${em.tip}</div>
+        <div class="edt-txt en-sub">💡 ${em.tipEn}</div>
+      </div>
+
+      <!-- 應對方法 -->
+      <div class="edt-sec">
+        <div class="edt-lbl"><span class="zh">應對方法</span><span class="en-sub">What to do</span></div>
+        <div class="edt-txt">🛠️ ${em.strat}</div>
+      </div>
+
+      <!-- 評分 -->
+      <div class="edt-sec">
+        <div class="edt-lbl"><span class="zh">你多常有這種感覺？</span><span class="en-sub">How often do you feel this?</span></div>
+        <div class="e-rate">
+          <span style="font-size:.78rem;color:#888" class="zh">很少</span>
+          <span style="font-size:.78rem;color:#888" class="en-sub">Rarely</span>
+          <div>${[1,2,3,4,5].map(n=>`<span class="er-s" data-n="${n}">⭐</span>`).join('')}</div>
+          <span style="font-size:.78rem;color:#888" class="zh">很常</span>
+          <span style="font-size:.78rem;color:#888" class="en-sub">Often</span>
+        </div>
+      </div>
+
       ${S.emote.length>=8&&!S.done.includes(aid)?`<div class="btn-row"><button class="btn" id="ew-done-btn" style="--acc:${a.color||'#FF6B9D'}"><span class="zh">已探索 ${S.emote.length} 種情緒！完成活動 🎉</span><span class="en-sub">Explored ${S.emote.length} emotions! Done 🎉</span></button></div>`:''}
     </div>`;
     box.querySelectorAll('.er-s').forEach(star=>{
