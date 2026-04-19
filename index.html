@@ -284,14 +284,46 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;heigh
 @keyframes fall{0%{opacity:1;transform:translateY(-20px) rotate(0deg)}100%{opacity:0;transform:translateY(80vh) rotate(720deg)}}
 
 @media(max-width:480px){.domain-grid{grid-template-columns:1fr}.ew-grid{grid-template-columns:repeat(3,1fr)}.str-grid{grid-template-columns:repeat(2,1fr)}.bdg-grid{grid-template-columns:repeat(2,1fr)}.bm-wrap{flex-direction:column}.cop-grid{grid-template-columns:1fr}.rpl-grid{grid-template-columns:1fr}}
+
+/* ── BILINGUAL ── */
+.en-sub{font-size:.68rem;opacity:.65;font-style:italic;margin-top:1px}
+.lang-tog{background:#F0F0F0;border:none;border-radius:20px;padding:5px 13px;font-size:.78rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all .2s}
+.lang-tog.en{background:#667EEA;color:#fff}
+body.lang-en .zh{display:none}
+body.lang-en .en-sub{font-size:.9rem;opacity:1;font-style:normal;font-weight:700;color:inherit}
+body.lang-en .ew .en-sub{font-size:.74rem}
+
+/* ── SPEAK BUTTON ── */
+.speak-btn{background:none;border:2px solid #E0E0E0;border-radius:99px;padding:4px 10px;font-size:.82rem;cursor:pointer;transition:all .2s;font-family:inherit;white-space:nowrap;flex-shrink:0}
+.speak-btn:hover{background:#F0F6FF;border-color:#667EEA}
+.speak-btn.speaking{background:#667EEA;color:#fff;border-color:#667EEA;animation:pulse .8s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+
+/* ── DIALOGUE BUBBLES ── */
+.dlg-scene{display:flex;flex-direction:column;gap:12px;margin:12px 0}
+.dlg{display:flex;gap:10px;align-items:flex-start}
+.dlg.right{flex-direction:row-reverse}
+.dlg-av{font-size:2rem;width:44px;height:44px;background:#F0F0F0;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.dlg-body{max-width:80%}
+.dlg-name{font-size:.7rem;font-weight:800;color:#888;margin-bottom:4px}
+.dlg.right .dlg-name{text-align:right}
+.dlg-bubble-txt{background:#F0F4FF;border-radius:0 16px 16px 16px;padding:10px 14px;font-size:.88rem;line-height:1.65;color:#333;position:relative}
+.dlg.right .dlg-bubble-txt{background:#E8FFF8;border-radius:16px 0 16px 16px}
+.dlg-en{font-size:.75rem;color:#888;font-style:italic;margin-top:4px}
+.dlg-actions{display:flex;gap:6px;margin-top:6px}
+.dlg-actions .speak-btn{font-size:.75rem;padding:3px 8px}
+.narrator{background:#FFF8E1;border-radius:12px;padding:10px 14px;font-size:.85rem;color:#555;line-height:1.65;border-left:3px solid #FFE66D;display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
 </style>
 </head>
 <body>
 
 <header id="hdr">
   <button id="hdr-back" onclick="goBack()">←</button>
-  <div id="hdr-title">🌈 SEL 情緒冒險家</div>
-  <div id="hdr-xp" onclick="showScreen('achieve')">⭐ <span id="xp-val">0</span></div>
+  <div id="hdr-title"><span class="zh">🌈 SEL 情緒冒險家</span><span class="en-sub" style="display:none"> Emotion Explorer</span></div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <button class="lang-tog" id="lang-tog" onclick="toggleLang()">EN</button>
+    <div id="hdr-xp" onclick="showScreen('achieve')">⭐ <span id="xp-val">0</span></div>
+  </div>
 </header>
 
 <!-- HOME -->
@@ -398,22 +430,22 @@ const ACTS={
 };
 
 const EMOTIONS=[
-  {e:'😊',n:'開心',c:'#FFE66D',body:'嘴角上揚、眼睛發亮、心跳加快',tip:'分享給別人，快樂會加倍！',strat:'大聲笑、跳舞、告訴朋友'},
-  {e:'😢',n:'難過',c:'#74B9FF',body:'胸口悶悶、眼淚出來、說話無力',tip:'哭出來沒關係，找人說說話',strat:'深呼吸、寫日記、找人陪'},
-  {e:'😠',n:'生氣',c:'#FF7675',body:'臉發紅、拳頭握緊、呼吸急促',tip:'先暫停！數到10再行動',strat:'深呼吸、離開現場、畫出來'},
-  {e:'😨',n:'害怕',c:'#A29BFE',body:'心跳加快、身體發抖、肚子不舒服',tip:'告訴大人，你不是一個人',strat:'找安全的人、說出來、做深呼吸'},
-  {e:'🤩',n:'興奮',c:'#FD79A8',body:'全身充滿能量、說話很快、想動來動去',tip:'好好享受這感覺，但別衝動',strat:'深呼吸冷靜、分享期待'},
-  {e:'😔',n:'失落',c:'#FDCB6E',body:'心空空的、提不起勁、肩膀下垂',tip:'做一件喜歡的事，慢慢就好',strat:'聽音樂、找朋友、做運動'},
-  {e:'😌',n:'平靜',c:'#55EFC4',body:'呼吸順暢、肌肉放鬆、頭腦清晰',tip:'好好珍惜這感覺！',strat:'用呼吸練習保持平靜'},
-  {e:'😤',n:'挫折',c:'#E17055',body:'額頭緊、胃部緊繃、想放棄',tip:'暫停休息，換個方式再試',strat:'休息5分鐘、請人幫忙、分步驟'},
-  {e:'🤗',n:'溫暖',c:'#FFB347',body:'胸口暖暖的、想微笑、想靠近別人',tip:'這感覺很珍貴，記住它！',strat:'說謝謝、給個擁抱'},
-  {e:'😒',n:'無聊',c:'#B2BEC3',body:'打哈欠、動來動去、很難集中',tip:'嘗試新活動或找人一起玩',strat:'運動、創作、找新遊戲'},
-  {e:'🥰',n:'被愛',c:'#FF85A1',body:'心跳加快、臉會紅、想靠近對方',tip:'說出你的感謝，讓對方也知道',strat:'說謝謝、寫卡片、微笑'},
-  {e:'😳',n:'尷尬',c:'#FAB1A0',body:'臉紅、想躲起來、說話結巴',tip:'每個人都有過這感覺，沒關係的',strat:'深呼吸、笑一笑、繼續往前'},
-  {e:'🤔',n:'困惑',c:'#81ECEC',body:'眉頭皺起、搔頭、不確定該怎麼做',tip:'不懂就問，這是聰明的表現',strat:'請教別人、分解問題'},
-  {e:'😴',n:'疲憊',c:'#B2BEC3',body:'眼皮重、打哈欠、反應變慢',tip:'休息一下，身體需要充電',strat:'小睡、喝水、做伸展'},
-  {e:'🥺',n:'委屈',c:'#DFE6E9',body:'嘴巴癟起、眼眶紅、說不出話',tip:'把感受說出來，讓別人了解你',strat:'深呼吸、告訴信任的人'},
-  {e:'😎',n:'自信',c:'#6C5CE7',body:'背脊挺直、眼神堅定、聲音清楚',tip:'繼續保持，你做得到！',strat:'記住成功經驗、正向自我對話'},
+  {e:'😊',n:'開心',en:'Happy',    c:'#FFE66D',body:'嘴角上揚、眼睛發亮、心跳加快',bodyEn:'Smiling, eyes bright, heart beating fast',tip:'分享給別人，快樂會加倍！',tipEn:'Share it — happiness doubles!',strat:'大聲笑、跳舞、告訴朋友'},
+  {e:'😢',n:'難過',en:'Sad',      c:'#74B9FF',body:'胸口悶悶、眼淚出來、說話無力',bodyEn:'Heavy chest, tears, low energy',tip:'哭出來沒關係，找人說說話',tipEn:'It\'s OK to cry. Talk to someone.',strat:'深呼吸、寫日記、找人陪'},
+  {e:'😠',n:'生氣',en:'Angry',    c:'#FF7675',body:'臉發紅、拳頭握緊、呼吸急促',bodyEn:'Red face, tight fists, fast breathing',tip:'先暫停！數到10再行動',tipEn:'Pause! Count to 10 first.',strat:'深呼吸、離開現場、畫出來'},
+  {e:'😨',n:'害怕',en:'Scared',   c:'#A29BFE',body:'心跳加快、身體發抖、肚子不舒服',bodyEn:'Fast heartbeat, shaking, tummy ache',tip:'告訴大人，你不是一個人',tipEn:'Tell a grown-up. You\'re not alone.',strat:'找安全的人、說出來、做深呼吸'},
+  {e:'🤩',n:'興奮',en:'Excited',  c:'#FD79A8',body:'全身充滿能量、說話很快、想動來動去',bodyEn:'Full of energy, talking fast, can\'t stay still',tip:'好好享受這感覺，但別衝動',tipEn:'Enjoy it, but think before you act!',strat:'深呼吸冷靜、分享期待'},
+  {e:'😔',n:'失落',en:'Down',     c:'#FDCB6E',body:'心空空的、提不起勁、肩膀下垂',bodyEn:'Empty feeling, no energy, slouching',tip:'做一件喜歡的事，慢慢就好',tipEn:'Do something you love. It will pass.',strat:'聽音樂、找朋友、做運動'},
+  {e:'😌',n:'平靜',en:'Calm',     c:'#55EFC4',body:'呼吸順暢、肌肉放鬆、頭腦清晰',bodyEn:'Easy breathing, relaxed muscles, clear mind',tip:'好好珍惜這感覺！',tipEn:'Treasure this feeling!',strat:'用呼吸練習保持平靜'},
+  {e:'😤',n:'挫折',en:'Frustrated',c:'#E17055',body:'額頭緊、胃部緊繃、想放棄',bodyEn:'Tight forehead, tense stomach, want to quit',tip:'暫停休息，換個方式再試',tipEn:'Take a break, then try a new way.',strat:'休息5分鐘、請人幫忙、分步驟'},
+  {e:'🤗',n:'溫暖',en:'Warm',     c:'#FFB347',body:'胸口暖暖的、想微笑、想靠近別人',bodyEn:'Warm chest, want to smile and hug',tip:'這感覺很珍貴，記住它！',tipEn:'This feeling is precious. Remember it!',strat:'說謝謝、給個擁抱'},
+  {e:'😒',n:'無聊',en:'Bored',    c:'#B2BEC3',body:'打哈欠、動來動去、很難集中',bodyEn:'Yawning, restless, hard to focus',tip:'嘗試新活動或找人一起玩',tipEn:'Try something new or find a friend!',strat:'運動、創作、找新遊戲'},
+  {e:'🥰',n:'被愛',en:'Loved',    c:'#FF85A1',body:'心跳加快、臉會紅、想靠近對方',bodyEn:'Fast heartbeat, blushing, want to be close',tip:'說出你的感謝，讓對方也知道',tipEn:'Say thank you so they know!',strat:'說謝謝、寫卡片、微笑'},
+  {e:'😳',n:'尷尬',en:'Embarrassed',c:'#FAB1A0',body:'臉紅、想躲起來、說話結巴',bodyEn:'Red face, want to hide, stuttering',tip:'每個人都有過這感覺，沒關係的',tipEn:'Everyone feels this. It\'s OK!',strat:'深呼吸、笑一笑、繼續往前'},
+  {e:'🤔',n:'困惑',en:'Confused', c:'#81ECEC',body:'眉頭皺起、搔頭、不確定該怎麼做',bodyEn:'Furrowed brow, scratching head, unsure',tip:'不懂就問，這是聰明的表現',tipEn:'Ask questions — that\'s smart!',strat:'請教別人、分解問題'},
+  {e:'😴',n:'疲憊',en:'Tired',    c:'#B2BEC3',body:'眼皮重、打哈欠、反應變慢',bodyEn:'Heavy eyelids, yawning, slow reactions',tip:'休息一下，身體需要充電',tipEn:'Rest. Your body needs to recharge.',strat:'小睡、喝水、做伸展'},
+  {e:'🥺',n:'委屈',en:'Hurt',     c:'#DFE6E9',body:'嘴巴癟起、眼眶紅、說不出話',bodyEn:'Lip trembling, teary eyes, speechless',tip:'把感受說出來，讓別人了解你',tipEn:'Speak up so others can understand you.',strat:'深呼吸、告訴信任的人'},
+  {e:'😎',n:'自信',en:'Confident',c:'#6C5CE7',body:'背脊挺直、眼神堅定、聲音清楚',bodyEn:'Standing tall, steady eyes, clear voice',tip:'繼續保持，你做得到！',tipEn:'Keep it up — you\'ve got this!',strat:'記住成功經驗、正向自我對話'},
 ];
 
 const BODY_ZONES=[
@@ -631,6 +663,49 @@ if(!S.strsel) S.strsel=[];
 if(!S.streak) S.streak=0;
 if(!S.avt)    S.avt='';
 function save(){localStorage.setItem('sel2_state',JSON.stringify(S))}
+
+// ── TTS SPEECH ──
+let _speaking=false;
+function speak(text,lang){
+  if(!window.speechSynthesis)return;
+  lang=lang||(document.body.classList.contains('lang-en')?'en-US':'zh-TW');
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang=lang;u.rate=lang==='zh-TW'?0.88:0.9;u.pitch=1.1;
+  u.onend=()=>{_speaking=false;document.querySelectorAll('.speak-btn.speaking').forEach(b=>{b.classList.remove('speaking');b.textContent='🔊';});};
+  speechSynthesis.speak(u);_speaking=true;
+}
+function speakBtn(el,text,lang){
+  document.querySelectorAll('.speak-btn.speaking').forEach(b=>{b.classList.remove('speaking');b.textContent='🔊';});
+  if(_speaking){speechSynthesis.cancel();_speaking=false;return;}
+  el.classList.add('speaking');el.textContent='⏹';speak(text,lang);
+}
+function dlgSpeak(idx,arr){
+  // read whole dialogue sequentially
+  speechSynthesis.cancel();
+  let i=0;
+  function next(){
+    if(i>=arr.length)return;
+    const u=new SpeechSynthesisUtterance(arr[i].text);
+    const isEn=document.body.classList.contains('lang-en');
+    u.lang=isEn?'en-US':'zh-TW';u.rate=0.88;u.pitch=arr[i].pitch||1;
+    u.onend=()=>{i++;setTimeout(next,400);};
+    speechSynthesis.speak(u);i++;
+  }
+  next();
+}
+
+// ── LANGUAGE TOGGLE ──
+function toggleLang(){
+  const isEn=document.body.classList.contains('lang-en');
+  document.body.classList.toggle('lang-en',!isEn);
+  document.body.classList.toggle('lang-zh',isEn);
+  const tog=document.getElementById('lang-tog');
+  tog.textContent=isEn?'EN':'中';
+  tog.classList.toggle('en',!isEn);
+  // show/hide English subtitle in header
+  document.querySelectorAll('#hdr-title .en-sub').forEach(el=>el.style.display=isEn?'':'none');
+}
 
 // ═══════════════════════════════
 // UTILS
@@ -860,7 +935,7 @@ function openActivity(aid){
 function renderEmotionWheel(c,aid){
   const a=ACTS[aid];
   let sel=-1,rated=false;
-  c.innerHTML=`<div class="card"><p style="font-size:.88rem;color:#666;line-height:1.65">點擊情緒臉孔，了解它的感受、身體反應和應對方式。再為「你有多常出現這種感受」評分！</p></div>
+  c.innerHTML=`<div class="card"><p style="font-size:.88rem;color:#666;line-height:1.65"><span class="zh">點擊情緒臉孔，了解它的感受、身體反應和應對方式。</span><span class="en-sub">Click an emotion face to learn about it!</span></p></div>
     <div class="ew-grid" id="ew-grid"></div>
     <div id="edt-box"></div>`;
   const g=document.getElementById('ew-grid');
@@ -868,30 +943,40 @@ function renderEmotionWheel(c,aid){
     const d=document.createElement('div');
     d.className='ew';
     d.style.background=em.c+'33';
-    d.innerHTML=`<div class="ee">${em.e}</div><div class="en">${em.n}</div>`;
+    d.innerHTML=`<div class="ee">${em.e}</div><div class="zh">${em.n}</div><div class="en-sub">${em.en}</div>`;
     d.onclick=()=>{
       document.querySelectorAll('.ew').forEach(x=>x.classList.remove('sel'));
       d.classList.add('sel');
       sel=i;
       if(!S.emote.includes(i)){S.emote.push(i);save();}
       showEdt(em);
+      const isEn=document.body.classList.contains('lang-en');
+      speak(isEn?em.en:em.n, isEn?'en-US':'zh-TW');
     };
     g.appendChild(d);
   });
   function showEdt(em){
     const box=document.getElementById('edt-box');
     box.innerHTML=`<div class="edt">
-      <h3>${em.e} ${em.n}</h3>
-      <div class="edt-sec"><div class="edt-lbl">身體感受</div><div class="edt-txt">🫀 ${em.body}</div></div>
-      <div class="edt-sec"><div class="edt-lbl">小撇步</div><div class="edt-txt">💡 ${em.tip}</div></div>
-      <div class="edt-sec"><div class="edt-lbl">應對方法</div><div class="edt-txt">🛠️ ${em.strat}</div></div>
-      <div class="edt-sec"><div class="edt-lbl">你多常有這種感覺？</div>
-        <div class="e-rate"><span style="font-size:.78rem;color:#888">很少</span>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <h3>${em.e} <span class="zh">${em.n}</span> <span class="en-sub">${em.en}</span></h3>
+        <button class="speak-btn" onclick="speakBtn(this, document.body.classList.contains('lang-en')?'${em.en}, ${em.bodyEn}, ${em.tipEn}':'${em.n}，${em.body}，${em.tip}')">🔊</button>
+      </div>
+      <div class="edt-sec"><div class="edt-lbl"><span class="zh">身體感受</span><span class="en-sub">Body feelings</span></div>
+        <div class="edt-txt zh">🫀 ${em.body}</div>
+        <div class="edt-txt en-sub">🫀 ${em.bodyEn}</div></div>
+      <div class="edt-sec"><div class="edt-lbl"><span class="zh">小撇步</span><span class="en-sub">Tip</span></div>
+        <div class="edt-txt zh">💡 ${em.tip}</div>
+        <div class="edt-txt en-sub">💡 ${em.tipEn}</div></div>
+      <div class="edt-sec"><div class="edt-lbl"><span class="zh">應對方法</span><span class="en-sub">What to do</span></div>
+        <div class="edt-txt">🛠️ ${em.strat}</div></div>
+      <div class="edt-sec"><div class="edt-lbl"><span class="zh">你多常有這種感覺？</span><span class="en-sub">How often do you feel this?</span></div>
+        <div class="e-rate"><span style="font-size:.78rem;color:#888" class="zh">很少</span><span style="font-size:.78rem;color:#888" class="en-sub">Rarely</span>
           <div>${[1,2,3,4,5].map(n=>`<span class="er-s" data-n="${n}">⭐</span>`).join('')}</div>
-          <span style="font-size:.78rem;color:#888">很常</span>
+          <span style="font-size:.78rem;color:#888" class="zh">很常</span><span style="font-size:.78rem;color:#888" class="en-sub">Often</span>
         </div>
       </div>
-      ${S.emote.length>=8&&!S.done.includes(aid)?`<div class="btn-row"><button class="btn" id="ew-done-btn" style="--acc:${a.color||'#FF6B9D'}">已探索 ${S.emote.length} 種情緒！完成活動 🎉</button></div>`:''}
+      ${S.emote.length>=8&&!S.done.includes(aid)?`<div class="btn-row"><button class="btn" id="ew-done-btn" style="--acc:${a.color||'#FF6B9D'}"><span class="zh">已探索 ${S.emote.length} 種情緒！完成活動 🎉</span><span class="en-sub">Explored ${S.emote.length} emotions! Done 🎉</span></button></div>`:''}
     </div>`;
     box.querySelectorAll('.er-s').forEach(star=>{
       star.onclick=()=>{
@@ -1113,50 +1198,117 @@ function renderThermometer(c,aid){
 function renderSTOP(c,aid){
   const a=ACTS[aid];
   const steps=[
-    {e:'✋',col:'#FF6B9D',title:'S - STOP 暫停',desc:'當你感到情緒激動時，先停下來！不要馬上說話或行動，給自己幾秒鐘。'},
-    {e:'🤔',col:'#FFA726',title:'T - THINK 思考',desc:'問自己：「我現在感受到什麼？是什麼讓我有這個感受？我有哪些選擇？」'},
-    {e:'🎯',col:'#51CF66',title:'O - OPTIONS 評估選項',desc:'想想各種可能的做法，並想一想每個做法會有什麼結果。'},
-    {e:'🚀',col:'#A29BFE',title:'P - PROCEED 行動',desc:'選擇最好的方法，然後勇敢去做。做完後想想看，有沒有更好的方式？'},
+    {e:'✋',col:'#FF6B9D',title:'S — STOP 暫停',en:'S — STOP',desc:'當你感到情緒激動時，先停下來！不要馬上說話或行動，給自己幾秒鐘。',descEn:'When emotions run high, STOP! Don\'t speak or act yet. Give yourself a few seconds.'},
+    {e:'🤔',col:'#FFA726',title:'T — THINK 思考',en:'T — THINK',desc:'問自己：「我現在感受到什麼？是什麼讓我有這個感受？」',descEn:'Ask yourself: "What am I feeling? What made me feel this way?"'},
+    {e:'🎯',col:'#51CF66',title:'O — OPTIONS 評估選項',en:'O — OPTIONS',desc:'想想各種可能的做法，每種做法會有什麼結果？',descEn:'Think of different choices. What would happen with each one?'},
+    {e:'🚀',col:'#A29BFE',title:'P — PROCEED 行動',en:'P — PROCEED',desc:'選擇最好的方法，勇敢去做！做完後想想，有沒有更好的方式？',descEn:'Choose the best option and act on it! Reflect afterwards.'},
   ];
   const practice={
-    story:'下課時，你不小心撞到同學，對方很生氣地說「你幹嘛！」你感到很委屈，因為是不小心的。',
+    story:'下課時，你不小心撞到同學小明，小明很生氣地說：「你幹嘛！」你感到很委屈，因為真的是不小心的。',
+    dialogue:[
+      {e:'🧒',name:'你',side:'right', text:'（走路時不小心撞到人）'},
+      {e:'👦',name:'小明',side:'left', text:'你幹嘛！你是故意的嗎！'},
+      {e:'🧒',name:'你',side:'right', text:'（心裡很委屈，不知道怎麼辦…）'},
+    ],
     qs:[
-      {q:'✋ STOP — 你首先應該做什麼？',choices:['深呼吸，先不要馬上反應','馬上反嗆回去','跑走不理他'],ans:0,fb:'對！先暫停一下，讓情緒冷靜是最重要的第一步。'},
-      {q:'🤔 THINK — 你想到什麼？',choices:['我是不小心的，但他可能覺得受傷了','他是壞人，故意挑釁我','算了，不用管了'],ans:0,fb:'很棒！能夠理解對方的感受，是換位思考的能力！'},
-      {q:'🚀 PROCEED — 最好的行動是？',choices:['說「對不起，我不是故意的」','不理他，假裝沒事','反嗆「那又怎樣！」'],ans:0,fb:'誠實道歉是最好的選擇！這樣可以化解誤會，讓大家都好受。'},
+      {q:'✋ STOP — 你首先應該做什麼？',qEn:'✋ STOP — What should you do first?',
+       choices:['深呼吸，先不要馬上反應','馬上反嗆回去「你才故意的！」','轉身跑走不理他'],
+       choicesEn:['Take a deep breath, don\'t react right away','Shout back "You\'re the one who\'s wrong!"','Run away and ignore him'],
+       ans:0,fb:'對！先暫停一下，讓情緒冷靜是最重要的第一步。',fbEn:'Correct! Pausing first is the most important step!'},
+      {q:'🤔 THINK — 你心裡想到什麼？',qEn:'🤔 THINK — What do you think?',
+       choices:['我是不小心的，但小明可能覺得受傷了','小明是壞人，故意挑釁我','算了，我就是錯的'],
+       choicesEn:['It was an accident, but Ming might be hurt','Ming is a bad person doing this on purpose','I give up, I\'m always wrong'],
+       ans:0,fb:'很棒！能夠理解對方的感受，這就是換位思考！',fbEn:'Great! Understanding others\' feelings is empathy!'},
+      {q:'🚀 PROCEED — 最好的行動是什麼？',qEn:'🚀 PROCEED — What\'s the best action?',
+       choices:['走過去說「對不起，我不是故意的」','不理他，假裝沒事','大聲說「你太誇張了！」'],
+       choicesEn:['Go say "Sorry, I didn\'t mean to"','Ignore him and pretend nothing happened','Yell "You\'re overreacting!"'],
+       ans:0,fb:'誠實道歉是最好的選擇！這樣可以化解誤會，讓大家都好受。',fbEn:'An honest apology is the best choice! It clears up misunderstandings.'},
     ]
   };
-  let qIdx=0,allDone=false;
-  c.innerHTML=`<div class="stop-steps">${steps.map(s=>`
-    <div class="stop-step" style="background:${s.col}18;border-left:4px solid ${s.col}">
-      <div class="ss-icon">${s.e}</div>
-      <div><div class="ss-title">${s.title}</div><div class="ss-desc">${s.desc}</div></div>
-    </div>`).join('')}</div>
+  let qIdx=0;
+  const isEn=()=>document.body.classList.contains('lang-en');
+  c.innerHTML=`
+    <div class="stop-steps">${steps.map(s=>`
+      <div class="stop-step" style="background:${s.col}18;border-left:4px solid ${s.col};cursor:pointer" onclick="speakBtn(this,'${(isEn()?s.en+'. '+s.descEn:s.title+'. '+s.desc).replace(/'/g,"\\'")}')">
+        <div class="ss-icon">${s.e}</div>
+        <div style="flex:1">
+          <div class="ss-title"><span class="zh">${s.title}</span><span class="en-sub">${s.en}</span></div>
+          <div class="ss-desc zh">${s.desc}</div>
+          <div class="ss-desc en-sub">${s.descEn}</div>
+        </div>
+        <div style="font-size:1.2rem;opacity:.4">🔊</div>
+      </div>`).join('')}</div>
     <div class="card">
-      <div style="font-size:.95rem;font-weight:800;margin-bottom:10px">🎯 情境練習</div>
-      <div style="background:#F0F4FF;border-radius:12px;padding:12px;font-size:.88rem;color:#444;line-height:1.65;margin-bottom:14px">${practice.story}</div>
-      <div id="sq-box"></div>
+      <div style="font-size:.92rem;font-weight:800;margin-bottom:12px">
+        🎬 <span class="zh">情境練習</span><span class="en-sub">Practice Scene</span>
+      </div>
+      <div class="narrator" style="margin-bottom:14px">
+        <div class="zh">${practice.story}</div>
+        <button class="speak-btn" onclick="speakBtn(this,'${practice.story.replace(/'/g,"\\'")}')">🔊</button>
+      </div>
+      <div class="dlg-scene">
+        ${practice.dialogue.map(d=>`
+          <div class="dlg${d.side==='right'?' right':''}">
+            <div class="dlg-av">${d.e}</div>
+            <div class="dlg-body">
+              <div class="dlg-name">${d.name}</div>
+              <div class="dlg-bubble-txt">${d.text}</div>
+              <div class="dlg-actions">
+                <button class="speak-btn" onclick="speakBtn(this,'${d.text.replace(/'/g,"\\'")}')">🔊</button>
+              </div>
+            </div>
+          </div>`).join('')}
+      </div>
+      <div id="sq-box" style="margin-top:14px"></div>
     </div>`;
+  // auto-play dialogue
+  setTimeout(()=>{
+    let i=0,delay=0;
+    practice.dialogue.forEach(d=>{
+      setTimeout(()=>speak(d.text),delay);
+      delay+=1400;
+    });
+  },800);
   function renderQ(){
     const q=practice.qs[qIdx];
     const box=document.getElementById('sq-box');
-    box.innerHTML=`<p style="font-size:.9rem;font-weight:700;margin-bottom:10px">${q.q}</p>
-      ${q.choices.map((ch,i)=>`<button class="cb" onclick="pickSTOP(this,${i},${q.ans},'${q.fb}')">${ch}</button>`).join('')}
+    const choices=isEn()&&q.choicesEn?q.choicesEn:q.choices;
+    box.innerHTML=`
+      <div style="background:#FFF8E1;border-radius:12px;padding:11px 14px;font-size:.9rem;font-weight:700;color:#555;margin-bottom:11px;display:flex;gap:8px;align-items:center">
+        <span>${isEn()&&q.qEn?q.qEn:q.q}</span>
+        <button class="speak-btn" style="margin-left:auto" onclick="speakBtn(this,'${(isEn()&&q.qEn?q.qEn:q.q).replace(/'/g,"\\'")}')">🔊</button>
+      </div>
+      ${choices.map((ch,i)=>`<button class="cb" onclick="pickSTOP(this,${i},${q.ans},'${(isEn()&&q.fbEn?q.fbEn:q.fb).replace(/'/g,"\\'")}','${ch.replace(/'/g,"\\'")}')">
+        ${ch}
+      </button>`).join('')}
       <div class="fb" id="sq-fb"></div>`;
   }
-  window.pickSTOP=function(btn,i,ans,fb){
+  window.pickSTOP=function(btn,i,ans,fb,choiceTxt){
     document.querySelectorAll('#sq-box .cb').forEach(b=>b.disabled=true);
     btn.classList.add(i===ans?'correct':'wrong');
     const fbEl=document.getElementById('sq-fb');
-    fbEl.textContent=(i===ans?'✅ ':'❌ ')+fb;
+    const msg=(i===ans?'✅ ':'❌ ')+fb;
+    fbEl.innerHTML=`<div style="display:flex;gap:8px;align-items:flex-start">
+      <div>${msg}</div>
+      <button class="speak-btn" style="margin-left:auto;flex-shrink:0" onclick="speakBtn(this,'${msg.replace(/'/g,"\\'")}')">🔊</button>
+    </div>`;
     fbEl.classList.add('show');
+    speak(msg);
     setTimeout(()=>{
       qIdx++;
       if(qIdx>=practice.qs.length){
-        document.getElementById('sq-box').innerHTML=`<div style="text-align:center;padding:10px"><div style="font-size:2rem">🎉</div><div style="font-weight:800;margin:8px 0">你已經學會STOP技巧了！</div>
-        <button class="btn" style="--acc:#A29BFE;margin-top:8px" onclick="addXP(${a.xp},'${aid}')">領取獎勵！</button></div>`;
+        document.getElementById('sq-box').innerHTML=`<div style="text-align:center;padding:16px">
+          <div style="font-size:2.5rem">🎉</div>
+          <div style="font-weight:800;font-size:1rem;margin:10px 0">
+            <span class="zh">你已經學會STOP技巧了！</span>
+            <span class="en-sub">You learned the STOP skill!</span>
+          </div>
+          <button class="btn" style="--acc:#A29BFE;margin-top:6px" onclick="addXP(${a.xp},'${aid}')">
+            <span class="zh">🏆 領取獎勵！</span><span class="en-sub">🏆 Claim reward!</span>
+          </button></div>`;
+        speak(isEn()?'Great job! You learned the STOP skill!':'你已經學會STOP技巧了！');
       }else renderQ();
-    },1600);
+    },2000);
   };
   renderQ();
 }
@@ -1169,19 +1321,51 @@ function renderPerspective(c,aid){
   let scIdx=0,charIdx=0;
   function render(){
     const sc=PERSPECTIVES[scIdx];
-    c.innerHTML=`<div class="card"><p style="font-size:.88rem;color:#666;line-height:1.65">同一件事，從不同人的角度看，感受完全不同！試著理解每個人的立場。</p></div>
-      <div class="card"><div style="background:#F0F4FF;border-radius:12px;padding:13px;font-size:.9rem;color:#333;line-height:1.7;margin-bottom:14px">🎬 <strong>情境：</strong>${sc.situation}</div>
-        <div style="font-size:.85rem;font-weight:700;color:#888;margin-bottom:10px">點擊角色，看看他/她的感受：</div>
-        <div class="pc-row">${sc.chars.map((ch,i)=>`<div class="pc${i===charIdx?' act':''}" onclick="selChar(${i})"><div class="pce">${ch.e}</div><div class="pcn">${ch.n}</div></div>`).join('')}</div>
-        <div class="pb" id="pb">${sc.chars[charIdx].feeling}</div>
-        <div style="margin-top:14px;background:#E8F8F5;border-radius:12px;padding:12px;font-size:.84rem;color:#00B894;font-weight:600;line-height:1.6">💡 ${sc.lesson}</div>
+    const ch=sc.chars[charIdx];
+    const isEn=document.body.classList.contains('lang-en');
+    c.innerHTML=`
+      <div class="card"><p style="font-size:.88rem;color:#666;line-height:1.65">
+        <span class="zh">同一件事，從不同人的角度看，感受完全不同！</span>
+        <span class="en-sub">The same situation feels different for everyone!</span></p></div>
+      <div class="card">
+        <div class="narrator">
+          <div>🎬 <span class="zh"><strong>情境：</strong>${sc.situation}</span></div>
+          <button class="speak-btn" onclick="speakBtn(this,'${sc.situation.replace(/'/g,"\\'")}')">🔊</button>
+        </div>
+        <div style="font-size:.82rem;font-weight:700;color:#888;margin:12px 0 8px">
+          <span class="zh">點擊角色，聽聽他的感受 👇</span>
+          <span class="en-sub">Tap a character to hear their feelings 👇</span>
+        </div>
+        <div class="pc-row">${sc.chars.map((ch,i)=>`
+          <div class="pc${i===charIdx?' act':''}" onclick="selChar(${i})">
+            <div class="pce">${ch.e}</div>
+            <div class="pcn" style="font-size:.72rem">${ch.n}</div>
+          </div>`).join('')}</div>
+        <div class="dlg-scene">
+          <div class="dlg">
+            <div class="dlg-av">${ch.e}</div>
+            <div class="dlg-body">
+              <div class="dlg-name">${ch.n}</div>
+              <div class="dlg-bubble-txt">${ch.feeling}</div>
+              <div class="dlg-actions">
+                <button class="speak-btn" onclick="speakBtn(this,'${ch.feeling.replace(/'/g,"\\'")}')">🔊 <span class="zh">聽</span><span class="en-sub">Listen</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="background:#E8F8F5;border-radius:12px;padding:12px;font-size:.84rem;color:#00B894;font-weight:600;line-height:1.6;display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+          <div>💡 ${sc.lesson}</div>
+          <button class="speak-btn" onclick="speakBtn(this,'${sc.lesson.replace(/'/g,"\\'")}')">🔊</button>
+        </div>
       </div>
       <div class="btn-row">
-        ${scIdx<PERSPECTIVES.length-1?`<button class="btn2" onclick="nextPersp()">下一個情境 →</button>`:''}
-        <button class="btn" style="--acc:#4ECDC4" onclick="addXP(${a.xp},'${aid}')">✅ 我學會換位思考了！</button>
+        ${scIdx<PERSPECTIVES.length-1?`<button class="btn2" onclick="nextPersp()"><span class="zh">下一個情境 →</span><span class="en-sub">Next →</span></button>`:''}
+        <button class="btn" style="--acc:#4ECDC4" onclick="addXP(${a.xp},'${aid}')">
+          <span class="zh">✅ 我學會換位思考了！</span><span class="en-sub">✅ I can see others' feelings!</span>
+        </button>
       </div>`;
   }
-  window.selChar=function(i){charIdx=i;render()};
+  window.selChar=function(i){charIdx=i;const sc=PERSPECTIVES[scIdx];speak(sc.chars[i].feeling);render();};
   window.nextPersp=function(){scIdx=(scIdx+1)%PERSPECTIVES.length;charIdx=0;render()};
   render();
 }
@@ -1192,33 +1376,78 @@ function renderPerspective(c,aid){
 function renderEmpathy(c,aid){
   const a=ACTS[aid];
   let idx=0,score=0;
+  // character avatars for each scenario
+  const scChars=[
+    [{e:'👧',n:'小芳'},{e:'👦',n:'弟弟'}],
+    [{e:'👦',n:'小文'},{e:'👩‍🏫',n:'老師'}],
+    [{e:'🧒',n:'阿志'},{e:'👫',n:'同學'}],
+  ];
   function render(){
     if(idx>=EMPATHY_SCENARIOS.length){
       c.innerHTML=`<div class="card" style="text-align:center;padding:30px">
-        <div style="font-size:3rem">🔎</div>
-        <h3 style="margin:14px 0">情緒偵探任務完成！</h3>
-        <p style="color:#888;font-size:.9rem">答對 ${score}/${EMPATHY_SCENARIOS.length} 題</p>
-        <p style="color:#555;font-size:.85rem;margin-top:10px;line-height:1.65">理解他人的感受，讓我們能給予更好的支持和幫助！</p>
+        <div style="font-size:3.5rem">🔎</div>
+        <h3 style="margin:14px 0"><span class="zh">情緒偵探任務完成！</span><span class="en-sub">Mission Complete!</span></h3>
+        <p style="color:#888;font-size:.9rem"><span class="zh">答對 ${score}/${EMPATHY_SCENARIOS.length} 題</span><span class="en-sub">${score}/${EMPATHY_SCENARIOS.length} correct</span></p>
+        <p style="color:#555;font-size:.85rem;margin-top:10px;line-height:1.65">
+          <span class="zh">理解他人的感受，讓我們能給予更好的支持！</span>
+          <span class="en-sub">Understanding feelings helps us support others!</span>
+        </p>
         <div class="btn-row" style="justify-content:center;margin-top:16px">
-          <button class="btn" style="--acc:#4ECDC4" onclick="addXP(${a.xp},'${aid}')">🎉 領取獎勵！</button>
+          <button class="btn" style="--acc:#4ECDC4" onclick="addXP(${a.xp},'${aid}')">🎉 <span class="zh">領取獎勵！</span><span class="en-sub">Claim reward!</span></button>
         </div></div>`;
       return;
     }
     const sc=EMPATHY_SCENARIOS[idx];
-    c.innerHTML=`<div class="card" style="font-size:.8rem;color:#aaa;margin-bottom:6px">第 ${idx+1}/${EMPATHY_SCENARIOS.length} 題 · 🔎 情緒偵探</div>
-      <div class="ed-scenario"><p>${sc.story}</p><div class="ed-q">${sc.q}</div>
-        ${sc.choices.map((ch,i)=>`<button class="cb" onclick="pickEmp(this,${ch.correct},'${sc.fb}')">${ch.t}</button>`).join('')}
+    const chars=scChars[idx]||[{e:'🧒',n:'同學'}];
+    c.innerHTML=`
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div style="font-size:.8rem;color:#aaa">🔎 <span class="zh">第 ${idx+1}/${EMPATHY_SCENARIOS.length} 題</span><span class="en-sub">Question ${idx+1}/${EMPATHY_SCENARIOS.length}</span></div>
+        <div style="display:flex;gap:4px">${EMPATHY_SCENARIOS.map((_,i)=>`<div style="width:8px;height:8px;border-radius:50%;background:${i<idx?'#4ECDC4':i===idx?'#FF6B9D':'#E0E0E0'}"></div>`).join('')}</div>
+      </div>
+      <div class="card">
+        <div style="font-size:.82rem;font-weight:700;color:#888;margin-bottom:10px">
+          <span class="zh">📖 發生了什麼事？</span><span class="en-sub">📖 What happened?</span>
+        </div>
+        <div class="dlg-scene">
+          <div class="dlg">
+            <div class="dlg-av">${chars[0].e}</div>
+            <div class="dlg-body">
+              <div class="dlg-name">${chars[0].n}</div>
+              <div class="dlg-bubble-txt">${sc.story}</div>
+              <div class="dlg-actions">
+                <button class="speak-btn" onclick="speakBtn(this,'${sc.story.replace(/'/g,"\\'")}')">🔊 <span class="zh">聽故事</span><span class="en-sub">Listen</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="background:#FFF8E1;border-radius:12px;padding:12px 14px;font-size:.9rem;font-weight:700;color:#555;margin-top:4px;display:flex;gap:10px;align-items:center">
+          <span>🤔</span>
+          <div>${sc.q}</div>
+          <button class="speak-btn" style="margin-left:auto" onclick="speakBtn(this,'${sc.q.replace(/'/g,"\\'")}')">🔊</button>
+        </div>
+        <div style="margin-top:12px">
+          ${sc.choices.map((ch,i)=>`<button class="cb" onclick="pickEmp(this,${ch.correct},'${sc.fb.replace(/'/g,"\\'")}','${sc.story.replace(/'/g,"\\'")}','${ch.t.replace(/'/g,"\\'")}')">
+            ${ch.t}
+          </button>`).join('')}
+        </div>
         <div class="fb" id="emp-fb"></div>
       </div>`;
+    // auto-speak story after short delay
+    setTimeout(()=>speak(sc.story),600);
   }
-  window.pickEmp=function(btn,correct,fb){
-    document.querySelectorAll('.ed-scenario .cb').forEach(b=>b.disabled=true);
+  window.pickEmp=function(btn,correct,fb,story,choiceTxt){
+    document.querySelectorAll('.card .cb').forEach(b=>b.disabled=true);
     btn.classList.add(correct?'correct':'wrong');
     if(correct)score++;
     const f=document.getElementById('emp-fb');
-    f.textContent=(correct?'✅ 答對了！':'💭 試試看！')+fb;
+    const msg=(correct?'✅ 答對了！':'💭 再想想看！')+fb;
+    f.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+      <div>${msg}</div>
+      <button class="speak-btn" onclick="speakBtn(this,'${msg.replace(/'/g,"\\'")}')">🔊</button>
+    </div>`;
     f.classList.add('show');
-    setTimeout(()=>{idx++;render();},1800);
+    speak(msg);
+    setTimeout(()=>{idx++;render();},2200);
   };
   render();
 }
