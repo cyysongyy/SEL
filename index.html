@@ -591,21 +591,25 @@ const EMPATHY_SCENARIOS=[
 const COMM_SCENARIOS=[
   {
     situation:'朋友每天都拿你的橡皮擦用，但都不還你，你很困擾。',
+    situationEn:'Your friend borrows your eraser every day but never returns it. You are bothered.',
     styles:[
-      {style:'ag',tag:'攻擊型',text:'「你這個自私鬼！每次都拿我的東西，你去死！」',bad:true},
-      {style:'pa',tag:'消極型',text:'（什麼都不說，自己在心裡生悶氣，假裝沒事）',neutral:true},
-      {style:'as',tag:'自信型',text:'「我想跟你說，你每天用我的橡皮擦但沒有還我，我有點困擾，可以請你帶自己的嗎？」',good:true},
+      {style:'ag',tag:'攻擊型',tagEn:'Aggressive',text:'「你這個自私鬼！每次都拿我的東西，你去死！」',textEn:'"You selfish jerk! You always take my stuff!"',bad:true},
+      {style:'pa',tag:'消極型',tagEn:'Passive',text:'（什麼都不說，自己在心裡生悶氣，假裝沒事）',textEn:'(Say nothing, feel angry inside, pretend everything is fine)',neutral:true},
+      {style:'as',tag:'自信型',tagEn:'Assertive',text:'「我想跟你說，你每天用我的橡皮擦但沒有還我，我有點困擾，可以請你帶自己的嗎？」',textEn:'"I want to say that you use my eraser every day but never return it. Could you bring your own?"',good:true},
     ],
     lesson:'自信型溝通：直接說出你的感受和需求，不攻擊別人，也不壓抑自己！',
+    lessonEn:'Assertive communication: speak up about your feelings and needs without attacking others or suppressing yourself!',
   },
   {
     situation:'小組討論時，你有一個很好的想法，但擔心別人覺得不好。',
+    situationEn:'During a group discussion, you have a great idea but worry others might not like it.',
     styles:[
-      {style:'pa',tag:'消極型',text:'（什麼都不說，把好點子藏在心裡）',neutral:true},
-      {style:'ag',tag:'攻擊型',text:'「你們的想法都很爛，只有我的最好，一定要聽我的！」',bad:true},
-      {style:'as',tag:'自信型',text:'「我有一個想法，不知道大家覺得怎麼樣？我們可以試試……」',good:true},
+      {style:'pa',tag:'消極型',tagEn:'Passive',text:'（什麼都不說，把好點子藏在心裡）',textEn:'(Say nothing, keep the idea to yourself)',neutral:true},
+      {style:'ag',tag:'攻擊型',tagEn:'Aggressive',text:'「你們的想法都很爛，只有我的最好，一定要聽我的！」',textEn:'"Your ideas are all terrible. Mine is the best — you must listen to me!"',bad:true},
+      {style:'as',tag:'自信型',tagEn:'Assertive',text:'「我有一個想法，不知道大家覺得怎麼樣？我們可以試試……」',textEn:'"I have an idea — I wonder what everyone thinks? Maybe we could try…"',good:true},
     ],
     lesson:'分享想法需要勇氣！自信地說出來，同時也尊重別人的意見，這才是團隊合作！',
+    lessonEn:'Sharing ideas takes courage! Speak up confidently while also respecting others — that is real teamwork!',
   },
 ];
 
@@ -697,6 +701,135 @@ const BADGES=[
   {e:'🏆',n:'SEL冠軍',d:'累積250XP',k:'xp250'},
 ];
 
+// ── GRATITUDE MCQ ──
+const GRATITUDE_PROMPTS=[
+  {zh:'今天，我很感謝…',en:'Today, I am grateful for…',
+   choices:[
+    {zh:'好天氣讓我心情好 😊',en:'Good weather made me happy 😊'},
+    {zh:'朋友陪我玩 🤝',en:'A friend played with me 🤝'},
+    {zh:'媽媽做了好吃的飯 🍱',en:'Mom cooked a yummy meal 🍱'},
+    {zh:'今天學到了新東西 📚',en:'I learned something new today 📚'},
+    {zh:'身體健康，能上學 🏫',en:'Being healthy and able to go to school 🏫'},
+    {zh:'有人對我微笑 😄',en:'Someone smiled at me 😄'},
+  ]},
+  {zh:'讓我感到幸福的小事是…',en:'A small thing that made me feel good…',
+   choices:[
+    {zh:'和朋友或寵物玩 🐾',en:'Playing with a friend or pet 🐾'},
+    {zh:'聽到喜歡的歌 🎵',en:'Hearing my favorite song 🎵'},
+    {zh:'有人幫了我一個忙 🙏',en:'Someone helped me today 🙏'},
+    {zh:'成功完成了一件困難的事 💪',en:'I finished something difficult 💪'},
+    {zh:'休息時間很開心 😄',en:'Had a fun break time 😄'},
+    {zh:'吃到了喜歡的食物 🍰',en:'Ate my favorite food 🍰'},
+  ]},
+  {zh:'我感謝身邊的人，因為…',en:'I am thankful for someone because…',
+   choices:[
+    {zh:'老師耐心教導我 📖',en:'My teacher patiently taught me 📖'},
+    {zh:'朋友在我難過時安慰我 🤗',en:'A friend comforted me when I was sad 🤗'},
+    {zh:'家人愛護我 ❤️',en:'My family loves and cares for me ❤️'},
+    {zh:'同學分享東西給我 🎁',en:'A classmate shared something with me 🎁'},
+    {zh:'有人誇獎了我 👏',en:'Someone praised me today 👏'},
+    {zh:'有人讓我不再孤單 🌟',en:'Someone made me feel less alone 🌟'},
+  ]},
+];
+
+// ── PEACE MAKER MCQ ──
+const PEACE_STEPS_MCQ=[
+  {col:'#FF6B9D',title:'1. 冷靜下來',titleEn:'1. Calm Down',
+   q:'你和朋友為了玩具起了爭執，你感到很生氣。你應該先怎麼做？',
+   qEn:'You argued with a friend over a toy and feel angry. What should you do first?',
+   choices:[
+    {zh:'對朋友大吼「你太過分了！」',en:'Shout at your friend "That is so unfair!"'},
+    {zh:'先深呼吸，讓自己冷靜下來',en:'Take deep breaths to calm yourself first'},
+    {zh:'跑走不想理他',en:'Run away and ignore them'},
+   ],ans:1,
+   fb:'先讓自己冷靜，才能清楚地表達感受！',fbEn:'Calming down first helps you express feelings clearly!'},
+  {col:'#FFA726',title:'2. 說出感受',titleEn:'2. Express Feelings',
+   q:'冷靜後，你要告訴朋友你的感受，哪句話最好？',
+   qEn:'After calming down, which is the best way to express your feelings?',
+   choices:[
+    {zh:'「你每次都這樣，你很自私！」',en:'"You always do this — you are so selfish!"'},
+    {zh:'（什麼都不說，自己忍著）',en:'(Say nothing and keep everything inside)'},
+    {zh:'「我覺得難過，因為我也想玩那個玩具」',en:'"I feel sad because I also wanted to play with the toy"'},
+   ],ans:2,
+   fb:'用「我覺得…」說出感受，不攻擊對方！',fbEn:'Use "I feel…" to share feelings without blaming!'},
+  {col:'#51CF66',title:'3. 聆聽對方',titleEn:'3. Listen',
+   q:'說完你的感受後，接下來該怎麼做？',
+   qEn:'After sharing your feelings, what should you do next?',
+   choices:[
+    {zh:'繼續說更多自己的感受，不讓他插話',en:'Keep talking without letting them speak'},
+    {zh:'安靜地聽朋友說他的想法和感受',en:'Quietly listen to your friend\'s thoughts and feelings'},
+    {zh:'走開，你已經說完了',en:'Walk away since you have already spoken'},
+   ],ans:1,
+   fb:'聆聽是解決衝突最重要的步驟之一！',fbEn:'Listening is one of the most important steps in resolving conflict!'},
+  {col:'#4ECDC4',title:'4. 找解決方法',titleEn:'4. Find a Solution',
+   q:'你們都說出了感受，現在要找出解決方法，哪個最好？',
+   qEn:'You both shared feelings. Now find a solution — which is best?',
+   choices:[
+    {zh:'讓一方完全贏，另一方必須接受',en:'Let one side win completely and the other must accept'},
+    {zh:'一起想出對兩人都公平的方法',en:'Think together of a fair solution that works for both'},
+    {zh:'去找大人幫你做決定',en:'Go find an adult to decide for you'},
+   ],ans:1,
+   fb:'找到對雙方都好的方法，才能真正解決問題！',fbEn:'A solution that works for both sides truly resolves the problem!'},
+  {col:'#A29BFE',title:'5. 握手和好',titleEn:'5. Make Up',
+   q:'找到解決方法後，最後一步是什麼？',
+   qEn:'After finding a solution, what is the final step?',
+   choices:[
+    {zh:'假裝剛才什麼都沒發生',en:'Pretend nothing happened'},
+    {zh:'互相道歉，重新開始友誼',en:'Apologize to each other and restart the friendship'},
+    {zh:'下次看到他就跑開',en:'Run away next time you see them'},
+   ],ans:1,
+   fb:'道歉和原諒，讓友誼更堅固！',fbEn:'Apologizing and forgiving makes friendships stronger!'},
+];
+
+// ── PROBLEM SOLVING MCQ ──
+const PS_STEPS_MCQ=[
+  {n:'說明問題',nEn:'Identify the Problem',
+   q:'你和同學都想第一個上台表演，互不相讓。這個問題的核心是什麼？',
+   qEn:'You and a classmate both want to perform first and neither will give way. What is the core problem?',
+   choices:[
+    {zh:'同學是壞人，故意跟我作對',en:'The classmate is mean and doing it on purpose'},
+    {zh:'我們都想先表演，但只能有一人先',en:'We both want to go first but only one person can'},
+    {zh:'表演機會太少了',en:'There are not enough performance slots'},
+   ],ans:1,
+   fb:'清楚說明問題，才能找到正確的解決方向！',fbEn:'Clearly identifying the problem points you toward the right solution!'},
+  {n:'想選項',nEn:'Think of Options',
+   q:'哪一組方法是解決這個問題的好選項？',
+   qEn:'Which set of options best addresses this problem?',
+   choices:[
+    {zh:'1.猜拳決定 2.輪流 3.請老師幫忙',en:'1. Rock-paper-scissors 2. Take turns 3. Ask the teacher'},
+    {zh:'1.不理同學 2.自己跑第一 3.哭鬧',en:'1. Ignore classmate 2. Rush to first 3. Cry and complain'},
+    {zh:'1.大聲爭吵 2.跑走 3.放棄表演',en:'1. Argue loudly 2. Run away 3. Give up performing'},
+   ],ans:0,
+   fb:'好的選項是有建設性、能解決問題的方法！',fbEn:'Good options are constructive and actually address the issue!'},
+  {n:'評估後果',nEn:'Evaluate Consequences',
+   q:'用猜拳決定誰先的好處是什麼？',
+   qEn:'What is the advantage of using rock-paper-scissors to decide who goes first?',
+   choices:[
+    {zh:'快速、公平、雙方都能接受',en:'Quick, fair, and both sides can accept the result'},
+    {zh:'輸的人一定會很不高興',en:'The loser will definitely be very unhappy'},
+    {zh:'以後可以用這個方法控制別人',en:'You can use this method to control others later'},
+   ],ans:0,
+   fb:'評估好處和壞處，幫助你做出更好的選擇！',fbEn:'Weighing pros and cons helps you make better decisions!'},
+  {n:'做出選擇',nEn:'Make a Choice',
+   q:'你決定用猜拳。做這個選擇最重要的理由是什麼？',
+   qEn:'You chose rock-paper-scissors. What is the most important reason for this choice?',
+   choices:[
+    {zh:'這樣對雙方都公平，容易被接受',en:'It is fair to both sides and easy to accept'},
+    {zh:'我猜我會贏，所以選這個',en:'I think I will win so I picked this'},
+    {zh:'老師要我這樣做的',en:'The teacher told me to do this'},
+   ],ans:0,
+   fb:'做選擇時，想想對大家都好的理由！',fbEn:'When choosing, think of reasons that are good for everyone!'},
+  {n:'行動與反思',nEn:'Act and Reflect',
+   q:'猜拳後你輸了。最好的態度是什麼？',
+   qEn:'You lost the rock-paper-scissors. What is the best attitude?',
+   choices:[
+    {zh:'不認輸，繼續爭吵',en:'Refuse to accept and keep arguing'},
+    {zh:'接受結果，支持同學先表演',en:'Accept the result and support the classmate going first'},
+    {zh:'以後再也不和這個同學說話',en:'Never speak to this classmate again'},
+   ],ans:1,
+   fb:'接受結果、反思過程，這才是真正的問題解決！',fbEn:'Accepting the result and reflecting shows true problem-solving!'},
+];
+
 // ═══════════════════════════════
 // STATE
 // ═══════════════════════════════
@@ -714,6 +847,7 @@ function save(){localStorage.setItem('sel2_state',JSON.stringify(S))}
 // ── TTS SPEECH ──
 let _speaking=false;
 let _voices=[];
+let _curEm=null; // current emotion for speak buttons
 
 // load voices (async on Chrome)
 function loadVoices(){
@@ -765,22 +899,25 @@ function speak(text,lang){
   _speaking=true;
 }
 
+function speakEm(field,lang){if(_curEm)speak(_curEm[field],lang);}
 function speakBtn(el,text,lang){
   document.querySelectorAll('.speak-btn.speaking').forEach(b=>{b.classList.remove('speaking');b.textContent='🔊';});
   if(_speaking){speechSynthesis.cancel();_speaking=false;return;}
   el.classList.add('speaking');el.textContent='⏹';speak(text,lang);
 }
 function dlgSpeak(idx,arr){
-  // read whole dialogue sequentially
   speechSynthesis.cancel();
   let i=0;
   function next(){
     if(i>=arr.length)return;
+    const lang=document.body.classList.contains('lang-en')?'en-US':'zh-TW';
     const u=new SpeechSynthesisUtterance(arr[i].text);
-    const isEn=document.body.classList.contains('lang-en');
-    u.lang=isEn?'en-US':'zh-TW';u.rate=0.88;u.pitch=arr[i].pitch||1;
-    u.onend=()=>{i++;setTimeout(next,400);};
-    speechSynthesis.speak(u);i++;
+    u.lang=lang;
+    const v=pickVoice(lang);if(v)u.voice=v;
+    u.rate=0.88;u.pitch=arr[i].pitch||1;
+    u.onend=()=>setTimeout(next,400);
+    speechSynthesis.speak(u);
+    i++;
   }
   next();
 }
@@ -1076,6 +1213,7 @@ function renderEmotionWheel(c,aid){
     g.appendChild(d);
   });
   function showEdt(em){
+    _curEm=em;
     const box=document.getElementById('edt-box');
     box.innerHTML=`<div class="edt">
       <!-- 標題 + 雙語發音 -->
@@ -1083,9 +1221,9 @@ function renderEmotionWheel(c,aid){
         <h3 style="font-size:1.1rem">${em.e} <span class="zh">${em.n}</span> <span class="en-sub" style="font-size:.95rem">${em.en}</span></h3>
         <div style="display:flex;gap:6px;margin-left:auto">
           <button class="speak-btn" style="background:#FFF3F8;border-color:#FF6B9D;color:#FF6B9D;font-weight:700"
-            onclick="speak('${em.n}','zh-TW')">🔊 中</button>
+            onclick="speakEm('n','zh-TW')">🔊 中</button>
           <button class="speak-btn" style="background:#F0F6FF;border-color:#667EEA;color:#667EEA;font-weight:700"
-            onclick="speak('${em.en}','en-US')">🔊 EN</button>
+            onclick="speakEm('en','en-US')">🔊 EN</button>
         </div>
       </div>
 
@@ -1095,9 +1233,9 @@ function renderEmotionWheel(c,aid){
           <div class="edt-lbl"><span class="zh">身體感受</span><span class="en-sub">Body feelings</span></div>
           <div style="display:flex;gap:5px">
             <button class="speak-btn" style="padding:2px 7px;font-size:.72rem;border-color:#FF6B9D;color:#FF6B9D"
-              onclick="speak('${em.body}','zh-TW')">🔊 中</button>
+              onclick="speakEm('body','zh-TW')">🔊 中</button>
             <button class="speak-btn" style="padding:2px 7px;font-size:.72rem;border-color:#667EEA;color:#667EEA"
-              onclick="speak('${em.bodyEn}','en-US')">🔊 EN</button>
+              onclick="speakEm('bodyEn','en-US')">🔊 EN</button>
           </div>
         </div>
         <div class="edt-txt zh">🫀 ${em.body}</div>
@@ -1110,9 +1248,9 @@ function renderEmotionWheel(c,aid){
           <div class="edt-lbl"><span class="zh">小撇步</span><span class="en-sub">Tip</span></div>
           <div style="display:flex;gap:5px">
             <button class="speak-btn" style="padding:2px 7px;font-size:.72rem;border-color:#FF6B9D;color:#FF6B9D"
-              onclick="speak('${em.tip}','zh-TW')">🔊 中</button>
+              onclick="speakEm('tip','zh-TW')">🔊 中</button>
             <button class="speak-btn" style="padding:2px 7px;font-size:.72rem;border-color:#667EEA;color:#667EEA"
-              onclick="speak('${em.tipEn}','en-US')">🔊 EN</button>
+              onclick="speakEm('tipEn','en-US')">🔊 EN</button>
           </div>
         </div>
         <div class="edt-txt zh">💡 ${em.tip}</div>
@@ -1614,63 +1752,143 @@ function renderEmpathy(c,aid){
 }
 
 // ═══════════════════════════════
-// ACTIVITY: GRATITUDE
+// ACTIVITY: GRATITUDE (MCQ)
 // ═══════════════════════════════
 function renderGratitude(c,aid){
   const a=ACTS[aid];
-  c.innerHTML=`<div class="card"><p style="font-size:.88rem;color:#666;line-height:1.65">每天找3件值得感謝的事，能讓心情更好！感謝可以是人、事、物，大事小事都算！</p></div>
-    <div class="card">
-      <div style="font-size:.9rem;font-weight:700;margin-bottom:12px">今天我感謝…</div>
-      ${[1,2,3].map(n=>`<div class="gr-item"><div class="gr-num">${['🌟','🌈','💛'][n-1]}</div>
-        <input class="gr-field" id="gr${n}" placeholder="第${n}件：例如：今天有朋友陪我吃午餐"></div>`).join('')}
-      <div class="btn-row"><button class="btn" style="--acc:#4ECDC4" onclick="saveGratitude('${aid}')">💾 儲存今天的感謝</button></div>
-    </div>
-    <div id="gr-history"></div>`;
-  renderGrHistory();
-}
-function saveGratitude(aid){
-  const items=[1,2,3].map(n=>document.getElementById('gr'+n)?.value.trim()).filter(Boolean);
-  if(items.length<3){toast('請填寫3件感謝的事！');return;}
-  const now=new Date();
-  S.grats.unshift({date:`${now.getMonth()+1}/${now.getDate()}`,items});
-  save();
-  addXP(ACTS[aid].xp,aid);
-  [1,2,3].forEach(n=>{const f=document.getElementById('gr'+n);if(f)f.value='';});
-  renderGrHistory();
-}
-function renderGrHistory(){
-  const box=document.getElementById('gr-history');
-  if(!box)return;
-  box.innerHTML=S.grats.length?'<div class="sec-title" style="margin-top:4px">過去的感謝 🌸</div>':'';
-  S.grats.slice(0,5).forEach(g=>{
-    box.innerHTML+=`<div class="gr-entry"><div class="ge-date">${g.date}</div>${g.items.map((it,i)=>`<div>${['🌟','🌈','💛'][i]} ${it}</div>`).join('')}</div>`;
-  });
+  const selected=[];
+  let round=0;
+  const icons=['🌟','🌈','💛'];
+  function renderRound(){
+    const pr=GRATITUDE_PROMPTS[round];
+    const total=GRATITUDE_PROMPTS.length;
+    c.innerHTML=`
+      <div class="card"><p style="font-size:.88rem;color:#666;line-height:1.65">
+        <span class="zh">每天找3件值得感謝的事，讓心情更好！選一件今天讓你感到感謝的事。</span>
+        <span class="en-sub">Finding 3 things to be grateful for each day boosts happiness! Pick one that fits today.</span>
+      </p></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div style="font-size:.8rem;color:#aaa">🙏 <span class="zh">第 ${round+1}/${total} 題</span><span class="en-sub">Round ${round+1}/${total}</span></div>
+        <div style="display:flex;gap:4px">${GRATITUDE_PROMPTS.map((_,i)=>`<div style="width:8px;height:8px;border-radius:50%;background:${i<round?'#4ECDC4':i===round?'#FF6B9D':'#E0E0E0'}"></div>`).join('')}</div>
+      </div>
+      <div class="card">
+        <div style="font-size:.95rem;font-weight:800;color:#333;margin-bottom:14px">
+          ${icons[round]} <span class="zh">${pr.zh}</span><span class="en-sub">${pr.en}</span>
+        </div>
+        <div id="gr-choices"></div>
+      </div>
+      ${selected.length>0?`<div class="card" style="background:#E8FDF5;border-left:4px solid #4ECDC4">
+        <div style="font-size:.82rem;font-weight:700;color:#00B894;margin-bottom:8px">✅ <span class="zh">已選擇的感謝</span><span class="en-sub">Selected so far</span></div>
+        ${selected.map((s,i)=>`<div style="font-size:.85rem;color:#444;padding:4px 0">${icons[i]} <span class="zh">${s.zh}</span><span class="en-sub">${s.en}</span></div>`).join('')}
+      </div>`:''}`;
+    const gc=document.getElementById('gr-choices');
+    pr.choices.forEach(ch=>{
+      const btn=document.createElement('button');
+      btn.className='cb';
+      btn.innerHTML=`<span class="zh">${ch.zh}</span><span class="en-sub">${ch.en}</span>`;
+      btn.onclick=()=>{
+        gc.querySelectorAll('.cb').forEach(b=>{b.disabled=true;b.style.opacity='.45';});
+        btn.style.opacity='1';btn.classList.add('correct');
+        selected.push(ch);
+        speak(isEN()?ch.en:ch.zh);
+        setTimeout(()=>{round++;round>=total?showGrSummary():renderRound();},900);
+      };
+      gc.appendChild(btn);
+    });
+  }
+  function showGrSummary(){
+    c.innerHTML=`<div class="card" style="text-align:center;padding:28px">
+      <div style="font-size:3rem">🙏</div>
+      <h3 style="margin:14px 0"><span class="zh">感謝清單完成！</span><span class="en-sub">Gratitude list complete!</span></h3>
+      <div style="text-align:left;margin:16px 0">
+        ${selected.map((s,i)=>`<div style="background:#E8FDF5;border-radius:12px;padding:11px 15px;margin-bottom:8px;border-left:4px solid #4ECDC4;font-size:.88rem">
+          ${icons[i]} <span class="zh">${s.zh}</span><span class="en-sub">${s.en}</span>
+        </div>`).join('')}
+      </div>
+      <p style="color:#555;font-size:.85rem;line-height:1.65;margin-bottom:16px">
+        <span class="zh">感謝讓我們更容易注意到生活中美好的事物！💚</span>
+        <span class="en-sub">Gratitude helps us notice the good things in life! 💚</span>
+      </p>
+      <button class="btn" style="--acc:#4ECDC4" onclick="addXP(${a.xp},'${aid}')">
+        🎉 <span class="zh">領取獎勵！</span><span class="en-sub">Claim reward!</span>
+      </button>
+    </div>`;
+    speak(isEN()?'Gratitude list complete! Well done!':'感謝清單完成，做得很好！');
+  }
+  renderRound();
 }
 
 // ═══════════════════════════════
-// ACTIVITY: COMM STYLES
+// ACTIVITY: COMM STYLES (MCQ)
 // ═══════════════════════════════
 function renderComm(c,aid){
   const a=ACTS[aid];
-  let scIdx=0;
+  let scIdx=0,answered=false;
   function render(){
     const sc=COMM_SCENARIOS[scIdx];
-    c.innerHTML=`<div class="card"><p style="font-size:.88rem;color:#666;line-height:1.65">溝通有三種方式：<b>攻擊型</b>（傷害別人）、<b>消極型</b>（壓抑自己）、<b>自信型</b>（表達自己又尊重別人）。</p></div>
-      <div class="card">
-        <div style="background:#F0F4FF;border-radius:12px;padding:13px;font-size:.9rem;color:#333;line-height:1.7;margin-bottom:14px">💬 <strong>情境：</strong>${sc.situation}</div>
-        ${sc.styles.map(s=>`<div class="cs-box ${s.style}"><span class="cs-tag">${s.tag}</span><span class="cs-txt">${s.text}</span></div>`).join('')}
-        <div style="margin-top:12px;background:#E8F8F5;border-radius:12px;padding:12px;font-size:.84rem;color:#00B894;font-weight:600;line-height:1.6">💡 ${sc.lesson}</div>
+    answered=false;
+    const total=COMM_SCENARIOS.length;
+    c.innerHTML=`
+      <div class="card"><p style="font-size:.88rem;color:#666;line-height:1.65">
+        <span class="zh">溝通有三種方式：<b>攻擊型</b>（傷害別人）、<b>消極型</b>（壓抑自己）、<b>自信型</b>（表達自己又尊重別人）。</span>
+        <span class="en-sub">Three styles: <b>Aggressive</b> (hurts others), <b>Passive</b> (suppresses self), <b>Assertive</b> (honest + respectful).</span>
+      </p></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div style="font-size:.8rem;color:#aaa">💬 <span class="zh">情境 ${scIdx+1}/${total}</span><span class="en-sub">Scenario ${scIdx+1}/${total}</span></div>
+        <div style="display:flex;gap:4px">${COMM_SCENARIOS.map((_,i)=>`<div style="width:8px;height:8px;border-radius:50%;background:${i<scIdx?'#51CF66':i===scIdx?'#FFA726':'#E0E0E0'}"></div>`).join('')}</div>
       </div>
       <div class="card">
-        <p style="font-size:.9rem;font-weight:700;margin-bottom:10px">✏️ 如果是你，你會怎麼說（自信型）？</p>
-        <textarea class="ps-field" id="comm-ans" placeholder="試著寫下你的自信型回應…" style="min-height:80px"></textarea>
-        <div class="btn-row">
-          ${scIdx<COMM_SCENARIOS.length-1?`<button class="btn2" onclick="nextComm()">下一個情境</button>`:''}
-          <button class="btn" style="--acc:#FFA726" onclick="if(document.getElementById('comm-ans').value.trim())addXP(${a.xp},'${aid}');else toast('請先寫下你的回應！')">✅ 完成練習！</button>
+        <div style="background:#F0F4FF;border-radius:12px;padding:13px;font-size:.9rem;color:#333;line-height:1.7;margin-bottom:14px">
+          💬 <span class="zh"><strong>情境：</strong>${sc.situation}</span><span class="en-sub"><strong>Situation:</strong> ${sc.situationEn}</span>
         </div>
+        ${sc.styles.map(s=>`<div class="cs-box ${s.style}">
+          <span class="cs-tag"><span class="zh">${s.tag}</span><span class="en-sub">${s.tagEn}</span></span>
+          <span class="cs-txt"><span class="zh">${s.text}</span><span class="en-sub">${s.textEn}</span></span>
+        </div>`).join('')}
+        <div style="margin-top:12px;background:#E8F8F5;border-radius:12px;padding:12px;font-size:.84rem;color:#00B894;font-weight:600;line-height:1.6">
+          💡 <span class="zh">${sc.lesson}</span><span class="en-sub">${sc.lessonEn}</span>
+        </div>
+      </div>
+      <div class="card">
+        <div style="font-size:.92rem;font-weight:800;color:#555;margin-bottom:12px">
+          🤔 <span class="zh">哪種溝通方式最好？</span><span class="en-sub">Which communication style is best here?</span>
+        </div>
+        <div id="comm-choices"></div>
+        <div class="fb" id="comm-fb"></div>
       </div>`;
+    const cc=document.getElementById('comm-choices');
+    sc.styles.forEach(s=>{
+      const btn=document.createElement('button');
+      btn.className='cb';
+      btn.innerHTML=`<strong><span class="zh">${s.tag}</span><span class="en-sub">${s.tagEn}</span></strong>
+        <span style="font-size:.82rem;color:#666;display:block;margin-top:3px">
+          <span class="zh">${s.text}</span><span class="en-sub">${s.textEn}</span>
+        </span>`;
+      btn.onclick=()=>{
+        if(answered)return;
+        answered=true;
+        cc.querySelectorAll('.cb').forEach(b=>b.disabled=true);
+        btn.classList.add(s.good?'correct':'wrong');
+        if(!s.good){cc.querySelectorAll('.cb').forEach(b=>{if(b!==btn&&cc.querySelectorAll('.cb')[sc.styles.indexOf(sc.styles.find(x=>x.good))]===b)b.classList.add('correct');});}
+        const fb=document.getElementById('comm-fb');
+        const isLast=scIdx===COMM_SCENARIOS.length-1;
+        const msg=s.good
+          ?(isEN()?'✅ Correct! Assertive style is honest and kind at the same time.':'✅ 正確！自信型溝通既誠實又尊重對方！')
+          :(isEN()?'Not quite. Look for the style that is both honest AND respectful.':'再想想！找找哪個方式既誠實又尊重對方。');
+        fb.innerHTML=`<div style="display:flex;gap:8px;align-items:flex-start">
+          <div>${msg}</div>
+          <button class="speak-btn" id="comm-speak" style="margin-left:auto;flex-shrink:0">🔊</button>
+        </div>
+        ${s.good&&!isLast?`<div style="margin-top:10px"><button class="btn2" onclick="nextComm()"><span class="zh">下一個情境 →</span><span class="en-sub">Next scenario →</span></button></div>`:''}
+        ${s.good&&isLast?`<div style="margin-top:10px"><button class="btn" style="--acc:#FFA726" onclick="addXP(${a.xp},'${aid}')">🎉 <span class="zh">完成練習！</span><span class="en-sub">Complete!</span></button></div>`:''}`;
+        fb.classList.add('show');
+        document.getElementById('comm-speak').onclick=()=>speak(msg);
+        speak(msg);
+      };
+      cc.appendChild(btn);
+    });
   }
-  window.nextComm=function(){scIdx=(scIdx+1)%COMM_SCENARIOS.length;render()};
+  window.nextComm=function(){scIdx=(scIdx+1)%COMM_SCENARIOS.length;render();};
   render();
 }
 
@@ -1721,30 +1939,73 @@ function renderSort(c,aid){
 }
 
 // ═══════════════════════════════
-// ACTIVITY: PEACE MAKER
+// ACTIVITY: PEACE MAKER (MCQ)
 // ═══════════════════════════════
 function renderPeace(c,aid){
   const a=ACTS[aid];
-  const steps=[
-    {col:'#FF6B9D',title:'1. 冷靜下來',q:'先深呼吸，讓自己冷靜。你現在的感受是什麼？',ph:'例如：我覺得很生氣，因為朋友拿了我的東西沒還'},
-    {col:'#FFA726',title:'2. 說出感受',q:'用「我」開頭，說出你的感受，不攻擊對方。',ph:'例如：我覺得不開心，因為你沒有詢問就拿走我的東西'},
-    {col:'#51CF66',title:'3. 聆聽對方',q:'讓對方也說說他的想法和感受，不打斷。',ph:'例如：他說他以為我不要了，他不是故意的'},
-    {col:'#4ECDC4',title:'4. 找到解決方法',q:'一起想一個對兩個人都好的解決方式。',ph:'例如：我們決定下次他要借東西前先問我，我也會更清楚說明'},
-    {col:'#A29BFE',title:'5. 握手和好',q:'雙方同意後，說「對不起」和「沒關係」，重新開始！',ph:'例如：我們都道了歉，決定以後更好地溝通'},
-  ];
-  c.innerHTML=`<div class="card"><p style="font-size:.88rem;color:#666;line-height:1.65">衝突是正常的！學習用這5個步驟，讓衝突變成讓關係更好的機會。</p></div>
-    <div class="pm-steps">${steps.map((s,i)=>`
-      <div class="pm-step" style="border-left-color:${s.col}">
-        <h4 style="color:${s.col}">${s.title}</h4>
-        <p>${s.q}</p>
-        <textarea class="ps-field" id="pm${i}" placeholder="${s.ph}" style="min-height:65px"></textarea>
-      </div>`).join('')}</div>
-    <div class="btn-row"><button class="btn" style="--acc:#FFA726" onclick="checkPeace('${aid}')">✅ 我的和平計畫完成了！</button></div>`;
-  window.checkPeace=function(aid){
-    const filled=[...document.querySelectorAll('[id^="pm"]')].filter(x=>x.value.trim()).length;
-    if(filled<3){toast('請至少填寫3個步驟！');return;}
-    addXP(ACTS[aid].xp,aid);
-  };
+  let stepIdx=0,correctCount=0;
+  function renderStep(){
+    const s=PEACE_STEPS_MCQ[stepIdx];
+    const total=PEACE_STEPS_MCQ.length;
+    c.innerHTML=`
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div style="font-size:.8rem;color:#aaa">🕊️ <span class="zh">步驟 ${stepIdx+1}/${total}</span><span class="en-sub">Step ${stepIdx+1}/${total}</span></div>
+        <div style="display:flex;gap:4px">${PEACE_STEPS_MCQ.map((_,i)=>`<div style="width:8px;height:8px;border-radius:50%;background:${i<stepIdx?'#4ECDC4':i===stepIdx?'#FF6B9D':'#E0E0E0'}"></div>`).join('')}</div>
+      </div>
+      <div class="card" style="border-left:4px solid ${s.col}">
+        <div style="font-size:.95rem;font-weight:800;color:${s.col};margin-bottom:10px">
+          <span class="zh">${s.title}</span><span class="en-sub">${s.titleEn}</span>
+        </div>
+        <div style="background:#FFF8E1;border-radius:12px;padding:12px 14px;font-size:.9rem;font-weight:700;color:#555;margin-bottom:12px">
+          🤔 <span class="zh">${s.q}</span><span class="en-sub">${s.qEn}</span>
+        </div>
+        <div id="pm-choices"></div>
+        <div class="fb" id="pm-fb"></div>
+      </div>`;
+    const cc=document.getElementById('pm-choices');
+    s.choices.forEach((ch,i)=>{
+      const btn=document.createElement('button');
+      btn.className='cb';
+      btn.innerHTML=`<span class="zh">${ch.zh}</span><span class="en-sub">${ch.en}</span>`;
+      btn.onclick=()=>{
+        cc.querySelectorAll('.cb').forEach(b=>b.disabled=true);
+        const correct=i===s.ans;
+        btn.classList.add(correct?'correct':'wrong');
+        cc.querySelectorAll('.cb')[s.ans].classList.add('correct');
+        if(correct)correctCount++;
+        const fb=document.getElementById('pm-fb');
+        const msg=(correct?'✅ ':'❌ ')+(isEN()?s.fbEn:s.fb);
+        fb.innerHTML=`<div style="display:flex;gap:8px;align-items:flex-start">
+          <div>${msg}</div>
+          <button class="speak-btn" id="pm-speak" style="margin-left:auto;flex-shrink:0">🔊</button>
+        </div>`;
+        fb.classList.add('show');
+        document.getElementById('pm-speak').onclick=()=>speak(msg);
+        speak(msg);
+        setTimeout(()=>{stepIdx++;stepIdx>=total?showPeaceSummary():renderStep();},2000);
+      };
+      cc.appendChild(btn);
+    });
+  }
+  function showPeaceSummary(){
+    c.innerHTML=`<div class="card" style="text-align:center;padding:28px">
+      <div style="font-size:3rem">🕊️</div>
+      <h3 style="margin:14px 0"><span class="zh">和平使者任務完成！</span><span class="en-sub">Peace Maker mission complete!</span></h3>
+      <p style="color:#555;font-size:.88rem;margin-bottom:6px">
+        <span class="zh">答對 ${correctCount}/${PEACE_STEPS_MCQ.length} 個步驟 🎯</span>
+        <span class="en-sub">${correctCount}/${PEACE_STEPS_MCQ.length} steps correct 🎯</span>
+      </p>
+      <p style="color:#888;font-size:.84rem;line-height:1.65;margin:10px 0 18px">
+        <span class="zh">衝突是正常的，有方法解決衝突，讓關係更好！</span>
+        <span class="en-sub">Conflict is normal. Resolving it well makes relationships stronger!</span>
+      </p>
+      <button class="btn" style="--acc:#FFA726" onclick="addXP(${a.xp},'${aid}')">
+        🎉 <span class="zh">領取獎勵！</span><span class="en-sub">Claim reward!</span>
+      </button>
+    </div>`;
+    speak(isEN()?'Peace Maker mission complete! Excellent work!':'和平使者任務完成，太棒了！');
+  }
+  renderStep();
 }
 
 // ═══════════════════════════════
@@ -1820,33 +2081,78 @@ function renderConsequence(c,aid){
 }
 
 // ═══════════════════════════════
-// ACTIVITY: PROBLEM SOLVE
+// ACTIVITY: PROBLEM SOLVE (MCQ)
 // ═══════════════════════════════
 function renderProblemSolve(c,aid){
   const a=ACTS[aid];
-  const steps=[
-    {n:'說明問題',q:'問題是什麼？用一句話描述。',ph:'例如：我和朋友為了誰先玩電腦吵架了'},
-    {n:'想選項',q:'列出至少3種解決方法（先不評判好壞）。',ph:'例如：1.猜拳決定 2.輪流各玩30分鐘 3.請大人幫忙'},
-    {n:'評估後果',q:'每個方法的好處和壞處是什麼？',ph:'例如：猜拳快但不一定公平；輪流麻煩但對兩人都公平'},
-    {n:'做出選擇',q:'你認為哪個方法最好？為什麼？',ph:'例如：我選輪流，因為對大家都公平'},
-    {n:'行動與反思',q:'做了之後，結果如何？有沒有需要調整的？',ph:'例如：我們輪流了，感覺好多了，下次還會用這個方法'},
-  ];
-  c.innerHTML=`<div class="card"><p style="font-size:.88rem;color:#666;line-height:1.65">學習5步驟解決問題，這個方法可以用在生活中各種困難！</p></div>
-    <div class="ps-steps">${steps.map((s,i)=>`
-      <div class="ps-step">
-        <div class="ps-num">${i+1}</div>
-        <div style="flex:1">
-          <div class="ps-title">${s.n}</div>
-          <div style="font-size:.82rem;color:#888;margin:3px 0 7px">${s.q}</div>
-          <textarea class="ps-field" id="ps${i}" placeholder="${s.ph}"></textarea>
+  let stepIdx=0,correctCount=0;
+  const stepColors=['#FF6B9D','#FFA726','#51CF66','#4ECDC4','#A29BFE'];
+  function renderStep(){
+    const s=PS_STEPS_MCQ[stepIdx];
+    const total=PS_STEPS_MCQ.length;
+    const col=stepColors[stepIdx];
+    c.innerHTML=`
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div style="font-size:.8rem;color:#aaa">🧩 <span class="zh">步驟 ${stepIdx+1}/${total}</span><span class="en-sub">Step ${stepIdx+1}/${total}</span></div>
+        <div style="display:flex;gap:4px">${PS_STEPS_MCQ.map((_,i)=>`<div style="width:8px;height:8px;border-radius:50%;background:${i<stepIdx?'#66BB6A':i===stepIdx?col:'#E0E0E0'}"></div>`).join('')}</div>
+      </div>
+      <div class="card" style="border-left:4px solid ${col}">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <div style="width:30px;height:30px;border-radius:50%;background:${col};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.88rem;flex-shrink:0">${stepIdx+1}</div>
+          <div style="font-size:.95rem;font-weight:800;color:${col}">
+            <span class="zh">${s.n}</span><span class="en-sub">${s.nEn}</span>
+          </div>
         </div>
-      </div>`).join('')}</div>
-    <div class="btn-row"><button class="btn" style="--acc:#66BB6A" onclick="checkPS('${aid}')">✅ 我的問題解決方案完成！</button></div>`;
-  window.checkPS=function(aid){
-    const filled=[...document.querySelectorAll('[id^="ps"]')].filter(x=>x.value.trim()).length;
-    if(filled<4){toast('請至少填寫4個步驟！');return;}
-    addXP(ACTS[aid].xp,aid);
-  };
+        <div style="background:#FFF8E1;border-radius:12px;padding:12px 14px;font-size:.9rem;font-weight:700;color:#555;margin-bottom:12px">
+          🤔 <span class="zh">${s.q}</span><span class="en-sub">${s.qEn}</span>
+        </div>
+        <div id="ps-choices"></div>
+        <div class="fb" id="ps-fb"></div>
+      </div>`;
+    const cc=document.getElementById('ps-choices');
+    s.choices.forEach((ch,i)=>{
+      const btn=document.createElement('button');
+      btn.className='cb';
+      btn.innerHTML=`<span class="zh">${ch.zh}</span><span class="en-sub">${ch.en}</span>`;
+      btn.onclick=()=>{
+        cc.querySelectorAll('.cb').forEach(b=>b.disabled=true);
+        const correct=i===s.ans;
+        btn.classList.add(correct?'correct':'wrong');
+        cc.querySelectorAll('.cb')[s.ans].classList.add('correct');
+        if(correct)correctCount++;
+        const fb=document.getElementById('ps-fb');
+        const msg=(correct?'✅ ':'❌ ')+(isEN()?s.fbEn:s.fb);
+        fb.innerHTML=`<div style="display:flex;gap:8px;align-items:flex-start">
+          <div>${msg}</div>
+          <button class="speak-btn" id="ps-speak" style="margin-left:auto;flex-shrink:0">🔊</button>
+        </div>`;
+        fb.classList.add('show');
+        document.getElementById('ps-speak').onclick=()=>speak(msg);
+        speak(msg);
+        setTimeout(()=>{stepIdx++;stepIdx>=total?showPSSummary():renderStep();},2000);
+      };
+      cc.appendChild(btn);
+    });
+  }
+  function showPSSummary(){
+    c.innerHTML=`<div class="card" style="text-align:center;padding:28px">
+      <div style="font-size:3rem">🧩</div>
+      <h3 style="margin:14px 0"><span class="zh">問題解決任務完成！</span><span class="en-sub">Problem Solving complete!</span></h3>
+      <p style="color:#555;font-size:.88rem;margin-bottom:6px">
+        <span class="zh">答對 ${correctCount}/${PS_STEPS_MCQ.length} 個步驟 🎯</span>
+        <span class="en-sub">${correctCount}/${PS_STEPS_MCQ.length} steps correct 🎯</span>
+      </p>
+      <p style="color:#888;font-size:.84rem;line-height:1.65;margin:10px 0 18px">
+        <span class="zh">這5個步驟可以用來解決生活中各種困難！</span>
+        <span class="en-sub">These 5 steps can solve all kinds of challenges in life!</span>
+      </p>
+      <button class="btn" style="--acc:#66BB6A" onclick="addXP(${a.xp},'${aid}')">
+        🎉 <span class="zh">領取獎勵！</span><span class="en-sub">Claim reward!</span>
+      </button>
+    </div>`;
+    speak(isEN()?'Problem solving complete! Great thinking!':'問題解決任務完成，思考得很棒！');
+  }
+  renderStep();
 }
 
 // ═══════════════════════════════
