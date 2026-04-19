@@ -336,22 +336,22 @@ body.lang-en .ew .en-sub{font-size:.74rem}
       </div>
       <div class="hero-info">
         <h2 id="av-name">情緒小探險家</h2>
-        <div class="sub">學習認識自己和他人的感受</div>
+        <div class="sub" id="hero-sub">學習認識自己和他人的感受</div>
         <div class="lv-badge" id="lv-badge">Lv.1 新手冒險家</div>
       </div>
     </div>
     <div class="hero-stats">
-      <div class="hs"><div class="hs-num" id="h-xp">0</div><div class="hs-lbl">⭐ 總XP</div></div>
-      <div class="hs"><div class="hs-num" id="h-done">0</div><div class="hs-lbl">✅ 活動</div></div>
-      <div class="hs"><div class="hs-num" id="h-bdg">0</div><div class="hs-lbl">🏅 獎章</div></div>
-      <div class="hs"><div class="hs-num" id="h-streak">0</div><div class="hs-lbl">🔥 天連續</div></div>
+      <div class="hs"><div class="hs-num" id="h-xp">0</div><div class="hs-lbl" id="stat-lbl-xp">⭐ 總XP</div></div>
+      <div class="hs"><div class="hs-num" id="h-done">0</div><div class="hs-lbl" id="stat-lbl-done">✅ 活動</div></div>
+      <div class="hs"><div class="hs-num" id="h-bdg">0</div><div class="hs-lbl" id="stat-lbl-bdg">🏅 獎章</div></div>
+      <div class="hs"><div class="hs-num" id="h-streak">0</div><div class="hs-lbl" id="stat-lbl-st">🔥 天連續</div></div>
     </div>
     <div class="xp-track">
       <div class="xp-track-label"><span id="xp-cur-lbl">0 XP</span><span id="xp-next-lbl">下一級：50 XP</span></div>
       <div class="xp-bar"><div class="xp-fill" id="xp-fill" style="width:0%"></div></div>
     </div>
   </div>
-  <div class="sec-title">✨ 五大學習領域</div>
+  <div class="sec-title" id="home-sec-title">✨ 五大學習領域</div>
   <div class="domain-grid" id="domain-grid"></div>
 </div>
 
@@ -380,11 +380,11 @@ body.lang-en .ew .en-sub{font-size:.74rem}
 </div>
 
 <nav id="bnav">
-  <button class="bn active" data-s="home"><div class="bi">🏠</div><div class="bl">首頁</div></button>
-  <button class="bn" data-s="domain-0"><div class="bi">🔍</div><div class="bl">自我覺察</div></button>
-  <button class="bn" data-s="domain-1"><div class="bi">🎮</div><div class="bl">自我管理</div></button>
-  <button class="bn" data-s="domain-2"><div class="bi">👁️</div><div class="bl">社會覺知</div></button>
-  <button class="bn" data-s="domain-3"><div class="bi">🤝</div><div class="bl">人際互動</div></button>
+  <button class="bn active" data-s="home"><div class="bi">🏠</div><div class="bl"><span class="zh">首頁</span><span class="en-sub">Home</span></div></button>
+  <button class="bn" data-s="domain-0"><div class="bi">🔍</div><div class="bl"><span class="zh">自我覺察</span><span class="en-sub">Self-Aware</span></div></button>
+  <button class="bn" data-s="domain-1"><div class="bi">🎮</div><div class="bl"><span class="zh">自我管理</span><span class="en-sub">Self-Manage</span></div></button>
+  <button class="bn" data-s="domain-2"><div class="bi">👁️</div><div class="bl"><span class="zh">社會覺知</span><span class="en-sub">Social</span></div></button>
+  <button class="bn" data-s="domain-3"><div class="bi">🤝</div><div class="bl"><span class="zh">人際互動</span><span class="en-sub">Relationships</span></div></button>
 </nav>
 
 <div id="toast"></div>
@@ -394,39 +394,44 @@ body.lang-en .ew .en-sub{font-size:.74rem}
 // DATA
 // ═══════════════════════════════
 const DOMAINS=[
-  {id:'aw',name:'自我覺察',desc:'認識自己的情緒與優點',emoji:'🔍',color:'#FF6B9D',
+  {id:'aw',name:'自我覺察',nameEn:'Self-Awareness',desc:'認識自己的情緒與優點',descEn:'Know your emotions & strengths',emoji:'🔍',color:'#FF6B9D',
    sel:'了解自己的情緒、想法與優點，是所有SEL學習的基礎',
+   selEn:'Understanding your own emotions, thoughts, and strengths is the foundation of all SEL.',
    activities:['aw1','aw2','aw3']},
-  {id:'mg',name:'自我管理',desc:'調節情緒，面對挑戰',emoji:'🎮',color:'#A29BFE',
+  {id:'mg',name:'自我管理',nameEn:'Self-Management',desc:'調節情緒，面對挑戰',descEn:'Manage emotions & face challenges',emoji:'🎮',color:'#A29BFE',
    sel:'學習控制衝動、管理情緒、設定目標並堅持下去',
+   selEn:'Learn to control impulses, manage emotions, set goals, and persist through difficulties.',
    activities:['mg1','mg2','mg3']},
-  {id:'sc',name:'社會覺知',desc:'理解他人的感受與需求',emoji:'👁️',color:'#4ECDC4',
+  {id:'sc',name:'社會覺知',nameEn:'Social Awareness',desc:'理解他人的感受與需求',descEn:'Understand others\' feelings & needs',emoji:'👁️',color:'#4ECDC4',
    sel:'能站在他人立場思考，理解不同背景的人',
+   selEn:'See situations from others\' perspectives and appreciate people from diverse backgrounds.',
    activities:['sc1','sc2','sc3']},
-  {id:'rs',name:'人際互動',desc:'建立良好關係，解決衝突',emoji:'🤝',color:'#FFA726',
+  {id:'rs',name:'人際互動',nameEn:'Relationship Skills',desc:'建立良好關係，解決衝突',descEn:'Build healthy relationships & resolve conflicts',emoji:'🤝',color:'#FFA726',
    sel:'學習溝通、合作與解決人際問題的技巧',
+   selEn:'Learn to communicate clearly, cooperate with others, and resolve interpersonal conflicts.',
    activities:['rs1','rs2','rs3']},
-  {id:'dm',name:'負責任的決定',desc:'思考後果，做好選擇',emoji:'⚖️',color:'#66BB6A',
+  {id:'dm',name:'負責任的決定',nameEn:'Responsible Decision-Making',desc:'思考後果，做好選擇',descEn:'Think about consequences & make good choices',emoji:'⚖️',color:'#66BB6A',
    sel:'考慮後果與他人感受，做出對大家都好的選擇',
+   selEn:'Consider consequences and others\' feelings to make choices that are good for everyone.',
    activities:['dm1','dm2','dm3']},
 ];
 
 const ACTS={
-  aw1:{name:'情緒大探索',desc:'認識16種情緒，了解它們的感覺',emoji:'😊',xp:15,level:1,domain:'aw',type:'emotion_wheel'},
-  aw2:{name:'身體感知地圖',desc:'情緒藏在身體的哪個地方？',emoji:'🧍',xp:20,level:2,domain:'aw',type:'body_map'},
-  aw3:{name:'我的優點星球',desc:'發現並肯定自己的特質與優點',emoji:'⭐',xp:25,level:2,domain:'aw',type:'strengths'},
-  mg1:{name:'呼吸冒險故事',desc:'跟著故事學習調節呼吸',emoji:'🫁',xp:15,level:1,domain:'mg',type:'breathing'},
-  mg2:{name:'情緒溫度計',desc:'察覺情緒強度，選擇應對策略',emoji:'🌡️',xp:20,level:2,domain:'mg',type:'thermometer'},
-  mg3:{name:'STOP暫停術',desc:'學習暫停、思考、行動的技巧',emoji:'✋',xp:25,level:2,domain:'mg',type:'stop_tech'},
-  sc1:{name:'換位思考',desc:'用不同人的眼睛看同一件事',emoji:'🔄',xp:20,level:2,domain:'sc',type:'perspective'},
-  sc2:{name:'情緒偵探',desc:'猜猜看他們現在有什麼感受？',emoji:'🔎',xp:20,level:2,domain:'sc',type:'empathy_detect'},
-  sc3:{name:'感恩練習',desc:'找到生活中值得感謝的事物',emoji:'🙏',xp:15,level:1,domain:'sc',type:'gratitude'},
-  rs1:{name:'說話方式訓練',desc:'學習三種溝通風格：積極/消極/自信',emoji:'💬',xp:20,level:2,domain:'rs',type:'comm_styles'},
-  rs2:{name:'好朋友特質分類',desc:'分辨哪些行為能促進或傷害友誼',emoji:'👫',xp:20,level:2,domain:'rs',type:'sort_game'},
-  rs3:{name:'和平使者',desc:'學習一步步解決朋友間的衝突',emoji:'🕊️',xp:30,level:3,domain:'rs',type:'peace_maker'},
-  dm1:{name:'決定大樹',desc:'跟著情境做出負責任的選擇',emoji:'🌳',xp:25,level:2,domain:'dm',type:'decision_tree'},
-  dm2:{name:'後果漣漪',desc:'看看你的決定如何影響周圍的人',emoji:'🌊',xp:25,level:2,domain:'dm',type:'consequence'},
-  dm3:{name:'問題解決術',desc:'用5個步驟解決困難的問題',emoji:'🧩',xp:30,level:3,domain:'dm',type:'problem_solve'},
+  aw1:{name:'情緒大探索',nameEn:'Emotion Explorer',desc:'認識16種情緒，了解它們的感覺',descEn:'Learn 16 emotions and how they feel',emoji:'😊',xp:15,level:1,domain:'aw',type:'emotion_wheel'},
+  aw2:{name:'身體感知地圖',nameEn:'Body Feelings Map',desc:'情緒藏在身體的哪個地方？',descEn:'Where do emotions live in your body?',emoji:'🧍',xp:20,level:2,domain:'aw',type:'body_map'},
+  aw3:{name:'我的優點星球',nameEn:'My Strengths Planet',desc:'發現並肯定自己的特質與優點',descEn:'Discover and celebrate your unique strengths',emoji:'⭐',xp:25,level:2,domain:'aw',type:'strengths'},
+  mg1:{name:'呼吸冒險故事',nameEn:'Breathing Adventure',desc:'跟著故事學習調節呼吸',descEn:'Follow a story to practise calming breaths',emoji:'🫁',xp:15,level:1,domain:'mg',type:'breathing'},
+  mg2:{name:'情緒溫度計',nameEn:'Emotion Thermometer',desc:'察覺情緒強度，選擇應對策略',descEn:'Rate emotion intensity & choose coping strategies',emoji:'🌡️',xp:20,level:2,domain:'mg',type:'thermometer'},
+  mg3:{name:'STOP暫停術',nameEn:'STOP Technique',desc:'學習暫停、思考、行動的技巧',descEn:'Learn to Stop, Think, choose Options & Proceed',emoji:'✋',xp:25,level:2,domain:'mg',type:'stop_tech'},
+  sc1:{name:'換位思考',nameEn:'Perspective Taking',desc:'用不同人的眼睛看同一件事',descEn:'See the same situation through different eyes',emoji:'🔄',xp:20,level:2,domain:'sc',type:'perspective'},
+  sc2:{name:'情緒偵探',nameEn:'Empathy Detective',desc:'猜猜看他們現在有什麼感受？',descEn:'Guess how others are feeling',emoji:'🔎',xp:20,level:2,domain:'sc',type:'empathy_detect'},
+  sc3:{name:'感恩練習',nameEn:'Gratitude Practice',desc:'找到生活中值得感謝的事物',descEn:'Find things in life to be thankful for',emoji:'🙏',xp:15,level:1,domain:'sc',type:'gratitude'},
+  rs1:{name:'說話方式訓練',nameEn:'Communication Styles',desc:'學習三種溝通風格：積極/消極/自信',descEn:'Learn 3 styles: aggressive / passive / assertive',emoji:'💬',xp:20,level:2,domain:'rs',type:'comm_styles'},
+  rs2:{name:'好朋友特質分類',nameEn:'Friendship Traits Sort',desc:'分辨哪些行為能促進或傷害友誼',descEn:'Sort behaviours that help or harm friendship',emoji:'👫',xp:20,level:2,domain:'rs',type:'sort_game'},
+  rs3:{name:'和平使者',nameEn:'Peace Maker',desc:'學習一步步解決朋友間的衝突',descEn:'Resolve conflicts step by step',emoji:'🕊️',xp:30,level:3,domain:'rs',type:'peace_maker'},
+  dm1:{name:'決定大樹',nameEn:'Decision Tree',desc:'跟著情境做出負責任的選擇',descEn:'Make responsible choices in real situations',emoji:'🌳',xp:25,level:2,domain:'dm',type:'decision_tree'},
+  dm2:{name:'後果漣漪',nameEn:'Consequence Ripples',desc:'看看你的決定如何影響周圍的人',descEn:'See how your decisions affect those around you',emoji:'🌊',xp:25,level:2,domain:'dm',type:'consequence'},
+  dm3:{name:'問題解決術',nameEn:'Problem Solving',desc:'用5個步驟解決困難的問題',descEn:'Use 5 steps to solve difficult problems',emoji:'🧩',xp:30,level:3,domain:'dm',type:'problem_solve'},
 };
 
 const EMOTIONS=[
@@ -696,15 +701,20 @@ function dlgSpeak(idx,arr){
 }
 
 // ── LANGUAGE TOGGLE ──
+function isEN(){return document.body.classList.contains('lang-en');}
+function t(zh,en){return isEN()?en:zh;}
 function toggleLang(){
-  const isEn=document.body.classList.contains('lang-en');
-  document.body.classList.toggle('lang-en',!isEn);
-  document.body.classList.toggle('lang-zh',isEn);
+  const wasEn=isEN();
+  document.body.classList.toggle('lang-en',!wasEn);
   const tog=document.getElementById('lang-tog');
-  tog.textContent=isEn?'EN':'中';
-  tog.classList.toggle('en',!isEn);
-  // show/hide English subtitle in header
-  document.querySelectorAll('#hdr-title .en-sub').forEach(el=>el.style.display=isEn?'':'none');
+  tog.textContent=wasEn?'EN':'中';
+  tog.classList.toggle('en',!wasEn);
+  // re-render all visible dynamic content
+  updateHome();
+  const cur=document.querySelector('.screen.active');
+  if(cur?.id==='s-domain') openDomain(_curDomain,false);
+  if(cur?.id==='s-activity'&&_curAct) openActivity(_curAct);
+  if(cur?.id==='s-achieve') renderAchieve();
 }
 
 // ═══════════════════════════════
@@ -741,11 +751,11 @@ function addXP(n,actId){
   save();
 }
 const LV_TABLE=[
-  {lv:1,name:'新手冒險家',av:'🌱',min:0,max:50},
-  {lv:2,name:'情緒探索家',av:'🌿',min:50,max:120},
-  {lv:3,name:'情緒達人',av:'🌟',min:120,max:220},
-  {lv:4,name:'SEL高手',av:'🏆',min:220,max:350},
-  {lv:5,name:'情緒冠軍',av:'👑',min:350,max:350},
+  {lv:1,name:'新手冒險家',nameEn:'Beginner Explorer',av:'🌱',min:0,max:50},
+  {lv:2,name:'情緒探索家',nameEn:'Emotion Explorer',av:'🌿',min:50,max:120},
+  {lv:3,name:'情緒達人',nameEn:'Emotion Expert',av:'🌟',min:120,max:220},
+  {lv:4,name:'SEL高手',nameEn:'SEL Champion',av:'🏆',min:220,max:350},
+  {lv:5,name:'情緒冠軍',nameEn:'Emotion Master',av:'👑',min:350,max:350},
 ];
 function getLv(){return LV_TABLE.find(l=>S.xp<l.max)||LV_TABLE[LV_TABLE.length-1];}
 
@@ -833,23 +843,29 @@ document.querySelectorAll('.bn').forEach(b=>{
 // ═══════════════════════════════
 function updateHome(){
   const lv=getLv();
-  const cur=lv.lv===5?S.xp:S.xp;
   const nextLv=LV_TABLE[lv.lv]||lv;
   const pct=lv.lv===5?100:Math.min(100,Math.round((S.xp-lv.min)/(nextLv.min-lv.min)*100));
-  // avatar: prefer custom, else level default
+  const lvName=isEN()?lv.nameEn:lv.name;
   document.getElementById('av-emoji').textContent=S.avt||lv.av;
-  document.getElementById('av-name').textContent=`${lv.name}`;
-  document.getElementById('lv-badge').textContent=`Lv.${lv.lv} ${lv.name}`;
+  document.getElementById('av-name').textContent=lvName;
+  document.getElementById('lv-badge').textContent=`Lv.${lv.lv} ${lvName}`;
   document.getElementById('xp-val').textContent=S.xp;
-  // hero stats
   document.getElementById('h-xp').textContent=S.xp;
   document.getElementById('h-done').textContent=S.done.length+'/15';
   document.getElementById('h-bdg').textContent=S.badges.length;
   document.getElementById('h-streak').textContent=getStreak();
-  // xp bar
   document.getElementById('xp-fill').style.width=pct+'%';
   document.getElementById('xp-cur-lbl').textContent=S.xp+' XP';
-  document.getElementById('xp-next-lbl').textContent=lv.lv===5?'已達最高等級 👑':`下一級：${nextLv.min} XP`;
+  document.getElementById('xp-next-lbl').textContent=lv.lv===5
+    ? t('已達最高等級 👑','Max Level Reached 👑')
+    : t(`下一級：${nextLv.min} XP`,`Next level: ${nextLv.min} XP`);
+  // hero sub-labels
+  document.getElementById('hero-sub').textContent=t('學習認識自己和他人的感受','Learning to understand emotions');
+  document.getElementById('stat-lbl-xp').textContent=t('⭐ 總XP','⭐ Total XP');
+  document.getElementById('stat-lbl-done').textContent=t('✅ 活動','✅ Activities');
+  document.getElementById('stat-lbl-bdg').textContent=t('🏅 獎章','🏅 Badges');
+  document.getElementById('stat-lbl-st').textContent=t('🔥 天連續','🔥 Day Streak');
+  document.getElementById('home-sec-title').textContent=t('✨ 五大學習領域','✨ Five SEL Domains');
   renderDomainGrid();
 }
 function renderDomainGrid(){
@@ -861,7 +877,9 @@ function renderDomainGrid(){
     const div=document.createElement('div');
     div.className='dc';
     div.style.setProperty('--dc',d.color);
-    div.innerHTML=`<div class="de">${d.emoji}</div><div class="dn">${d.name}</div><div class="dd">${d.desc}</div>
+    div.innerHTML=`<div class="de">${d.emoji}</div>
+      <div class="dn">${t(d.name,d.nameEn)}</div>
+      <div class="dd">${t(d.desc,d.descEn)}</div>
       <div class="dpb"><div class="dpf" style="width:${pct}%;background:${d.color}"></div></div>`;
     div.onclick=()=>openDomain(i);
     g.appendChild(div);
@@ -877,7 +895,7 @@ function openDomain(idx,push=true){
   const d=DOMAINS[idx];
   const dh=document.getElementById('dh');
   dh.style.background=`linear-gradient(135deg,${d.color},${d.color}CC)`;
-  dh.innerHTML=`<div class="dhe">${d.emoji}</div><div><h2>${d.name}</h2><p>${d.sel}</p></div>`;
+  dh.innerHTML=`<div class="dhe">${d.emoji}</div><div><h2>${t(d.name,d.nameEn)}</h2><p>${t(d.sel,d.selEn)}</p></div>`;
   const al=document.getElementById('act-list');
   al.innerHTML='';
   d.activities.forEach((aid,ai)=>{
@@ -886,12 +904,12 @@ function openDomain(idx,push=true){
     const div=document.createElement('div');
     div.className='ac';
     const lvt=['lv1','lv2','lv3'][a.level-1];
-    const lvn=['⭐ 初級','🌟 中級','💎 進階'][a.level-1];
+    const lvn=isEN()?['⭐ Beginner','🌟 Intermediate','💎 Advanced'][a.level-1]:['⭐ 初級','🌟 中級','💎 進階'][a.level-1];
     div.innerHTML=`
       <div class="ai">${a.emoji}</div>
       <div class="ainfo">
-        <div class="an">${a.name}</div>
-        <div class="ad">${a.desc}</div>
+        <div class="an">${t(a.name,a.nameEn)}</div>
+        <div class="ad">${t(a.desc,a.descEn)}</div>
         <span class="lv-tag ${lvt}">${lvn}</span>
         <div class="axp">+${a.xp} XP</div>
       </div>
@@ -913,7 +931,7 @@ function openActivity(aid){
   const a=ACTS[aid];
   const d=DOMAINS.find(x=>x.id===a.domain);
   const ah=document.getElementById('ah-card');
-  ah.innerHTML=`<div class="ahi">${a.emoji}</div><div><div class="ahn">${a.name}</div><div class="ahd">${d.emoji} ${d.name} · +${a.xp} XP</div></div>`;
+  ah.innerHTML=`<div class="ahi">${a.emoji}</div><div><div class="ahn">${t(a.name,a.nameEn)}</div><div class="ahd">${d.emoji} ${t(d.name,d.nameEn)} · +${a.xp} XP</div></div>`;
   document.getElementById('act-content').innerHTML='';
   const renderers={
     emotion_wheel:renderEmotionWheel,body_map:renderBodyMap,strengths:renderStrengths,
@@ -1738,11 +1756,11 @@ function renderProblemSolve(c,aid){
 // ═══════════════════════════════
 function renderAchieve(){
   const lv=getLv();
-  const totalActs=Object.keys(ACTS).length;
   document.getElementById('ach-stats').innerHTML=`
-    <div class="st-card"><div class="st-num" style="color:#F59E0B">${S.xp}</div><div class="st-lbl">總XP</div></div>
-    <div class="st-card"><div class="st-num" style="color:#51CF66">${S.done.length}</div><div class="st-lbl">完成活動</div></div>
-    <div class="st-card"><div class="st-num" style="color:#A29BFE">${S.badges.length}</div><div class="st-lbl">獲得獎章</div></div>`;
+    <div class="st-card"><div class="st-num" style="color:#F59E0B">${S.xp}</div><div class="st-lbl">${t('總XP','Total XP')}</div></div>
+    <div class="st-card"><div class="st-num" style="color:#51CF66">${S.done.length}</div><div class="st-lbl">${t('完成活動','Activities Done')}</div></div>
+    <div class="st-card"><div class="st-num" style="color:#A29BFE">${S.badges.length}</div><div class="st-lbl">${t('獲得獎章','Badges Earned')}</div></div>`;
+  document.querySelector('#s-achieve>div:first-child').textContent=t('🏅 我的成長','🏅 My Growth');
   const dp=document.getElementById('domain-prog');
   dp.innerHTML='';
   DOMAINS.forEach(d=>{
@@ -1750,7 +1768,7 @@ function renderAchieve(){
     const pct=Math.round(done/d.activities.length*100);
     dp.innerHTML+=`<div class="dp-row">
       <div class="dp-icon">${d.emoji}</div>
-      <div class="dp-label">${d.name}</div>
+      <div class="dp-label" style="font-size:.75rem">${t(d.name,d.nameEn)}</div>
       <div class="dp-bar"><div class="dp-fill" style="width:${pct}%;background:${d.color}"></div></div>
       <div class="dp-pct">${pct}%</div>
     </div>`;
@@ -1763,7 +1781,7 @@ function renderAchieve(){
       <div class="be">${b.e}</div>
       <div class="bn2">${b.n}</div>
       <div class="bd">${b.d}</div>
-      ${earned?'<div class="bk">✅ 已獲得</div>':'<div style="font-size:.7rem;color:#ccc">🔒 未解鎖</div>'}
+      ${earned?`<div class="bk">✅ ${t('已獲得','Earned')}</div>`:`<div style="font-size:.7rem;color:#ccc">🔒 ${t('未解鎖','Locked')}</div>`}
     </div>`;
   });
 }
