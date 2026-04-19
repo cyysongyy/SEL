@@ -287,10 +287,27 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;heigh
 
 /* ── BILINGUAL ── */
 .en-sub{font-size:.68rem;opacity:.65;font-style:italic;margin-top:1px}
-.lang-tog{background:#F0F0F0;border:none;border-radius:20px;padding:5px 13px;font-size:.78rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all .2s}
+.lang-tog{display:flex;align-items:center;gap:5px;border:2px solid #667EEA;border-radius:20px;padding:5px 12px;font-size:.8rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all .2s;background:#fff;color:#667EEA}
+.lang-tog:hover{background:#667EEA;color:#fff}
 .lang-tog.en{background:#667EEA;color:#fff}
-body.lang-en .zh{display:none}
-body.lang-en .en-sub{font-size:.9rem;opacity:1;font-style:normal;font-weight:700;color:inherit}
+body.lang-en .zh{display:none!important}
+body.lang-en .en-sub{font-size:inherit;opacity:1;font-style:normal;font-weight:inherit;color:inherit}
+
+/* LANG PICKER (first visit) */
+#lang-picker{position:fixed;inset:0;background:linear-gradient(135deg,#667EEA,#764BA2);z-index:500;display:flex;align-items:center;justify-content:center;padding:24px}
+.lp-box{background:#fff;border-radius:28px;padding:36px 28px;max-width:340px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.lp-box .lp-logo{font-size:3.5rem;margin-bottom:8px}
+.lp-box h2{font-size:1.3rem;font-weight:900;margin-bottom:4px;color:#2D3436}
+.lp-box .lp-sub{font-size:.88rem;color:#888;margin-bottom:28px;line-height:1.5}
+.lp-btns{display:flex;flex-direction:column;gap:12px}
+.lp-btn{border:none;border-radius:16px;padding:16px;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;transition:transform .15s,box-shadow .15s;display:flex;align-items:center;justify-content:center;gap:10px}
+.lp-btn:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,.15)}
+.lp-btn.zh-btn{background:linear-gradient(135deg,#FF6B9D,#C44DFF);color:#fff}
+.lp-btn.en-btn{background:linear-gradient(135deg,#667EEA,#4ECDC4);color:#fff}
+.lp-btn .lb-flag{font-size:1.5rem}
+.lp-btn .lb-txt{text-align:left}
+.lp-btn .lb-main{font-size:1rem;font-weight:800}
+.lp-btn .lb-hint{font-size:.75rem;opacity:.85;font-weight:400}
 body.lang-en .ew .en-sub{font-size:.74rem}
 
 /* ── SPEAK BUTTON ── */
@@ -317,11 +334,36 @@ body.lang-en .ew .en-sub{font-size:.74rem}
 </head>
 <body>
 
+<!-- LANGUAGE PICKER (first visit) -->
+<div id="lang-picker">
+  <div class="lp-box">
+    <div class="lp-logo">🌈</div>
+    <h2>SEL 情緒冒險家<br>Emotion Explorer</h2>
+    <div class="lp-sub">請選擇語言 / Please choose your language</div>
+    <div class="lp-btns">
+      <button class="lp-btn zh-btn" onclick="chooseLang('zh')">
+        <span class="lb-flag">🇹🇼</span>
+        <div class="lb-txt">
+          <div class="lb-main">繁體中文</div>
+          <div class="lb-hint">適合中文使用者</div>
+        </div>
+      </button>
+      <button class="lp-btn en-btn" onclick="chooseLang('en')">
+        <span class="lb-flag">🇺🇸</span>
+        <div class="lb-txt">
+          <div class="lb-main">English</div>
+          <div class="lb-hint">For English-speaking teachers</div>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+
 <header id="hdr">
   <button id="hdr-back" onclick="goBack()">←</button>
   <div id="hdr-title"><span class="zh">🌈 SEL 情緒冒險家</span><span class="en-sub" style="display:none"> Emotion Explorer</span></div>
   <div style="display:flex;align-items:center;gap:8px">
-    <button class="lang-tog" id="lang-tog" onclick="toggleLang()">EN</button>
+    <button class="lang-tog" id="lang-tog" onclick="toggleLang()">🌐 <span id="lang-label">EN</span></button>
     <div id="hdr-xp" onclick="showScreen('achieve')">⭐ <span id="xp-val">0</span></div>
   </div>
 </header>
@@ -700,15 +742,28 @@ function dlgSpeak(idx,arr){
   next();
 }
 
-// ── LANGUAGE TOGGLE ──
+// ── LANGUAGE ──
 function isEN(){return document.body.classList.contains('lang-en');}
 function t(zh,en){return isEN()?en:zh;}
+
+function chooseLang(lang){
+  document.getElementById('lang-picker').style.display='none';
+  S.lang=lang; save();
+  if(lang==='en'){
+    document.body.classList.add('lang-en');
+    document.getElementById('lang-tog').classList.add('en');
+    document.getElementById('lang-label').textContent='中';
+  }
+  updateHome();
+}
+
 function toggleLang(){
   const wasEn=isEN();
   document.body.classList.toggle('lang-en',!wasEn);
   const tog=document.getElementById('lang-tog');
-  tog.textContent=wasEn?'EN':'中';
   tog.classList.toggle('en',!wasEn);
+  document.getElementById('lang-label').textContent=wasEn?'EN':'中';
+  S.lang=wasEn?'zh':'en'; save();
   // re-render all visible dynamic content
   updateHome();
   const cur=document.querySelector('.screen.active');
@@ -1789,6 +1844,17 @@ function renderAchieve(){
 // ═══════════════════════════════
 // INIT
 // ═══════════════════════════════
+// restore saved language
+if(S.lang==='en'){
+  document.body.classList.add('lang-en');
+  document.getElementById('lang-tog').classList.add('en');
+  document.getElementById('lang-label').textContent='中';
+  document.getElementById('lang-picker').style.display='none';
+} else if(S.lang==='zh'){
+  document.getElementById('lang-picker').style.display='none';
+}
+// else: no saved lang → show picker
+
 updateHome();
 document.getElementById('xp-val').textContent=S.xp;
 </script>
