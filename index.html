@@ -515,27 +515,27 @@ const EMOTIONS=[
 ];
 
 const BODY_ZONES=[
-  {e:'🧠',n:'頭部',emots:['困惑 😕','興奮 🤩','擔心 😟','思考 🤔'],info:'頭部容易感受到緊繃、頭痛（壓力、害怕），或是眼睛發亮（開心、興奮）。'},
-  {e:'❤️',n:'胸口',emots:['開心 😊','難過 😢','愛 🥰','害怕 😨'],info:'胸口是情緒最強烈的地方。開心時溫暖、難過時沉重、愛時跳動、害怕時收緊。'},
-  {e:'🫁',n:'肚子',emots:['緊張 😰','害怕 😨','興奮 🤩','挫折 😤'],info:'肚子對情緒很敏感。「蝴蝶在肚子裡飛」就是緊張或興奮的感覺！'},
-  {e:'💪',n:'手臂/手',emots:['生氣 😠','緊張 😰','自信 😎','想擁抱 🤗'],info:'生氣時拳頭握緊；緊張時手心出汗；開心時想要擁抱別人。'},
-  {e:'🦵',n:'腿/腳',emots:['害怕 😨','興奮 🤩','無聊 😒','躁動 😤'],info:'害怕時腿軟；興奮時踮腳；無聊時不停抖腳！'},
-  {e:'😶',n:'臉部',emots:['開心 😊','尷尬 😳','生氣 😠','難過 😢'],info:'臉部最直接表現情緒：微笑、皺眉、臉紅、眼淚——臉是情緒的窗戶。'},
+  {e:'🧠',n:'頭部',nEn:'Head',emots:['困惑 😕','興奮 🤩','擔心 😟','思考 🤔'],emotsEn:['Confused 😕','Excited 🤩','Worried 😟','Thinking 🤔'],info:'頭部容易感受到緊繃、頭痛（壓力、害怕），或是眼睛發亮（開心、興奮）。',infoEn:'The head shows tension and headaches (stress, fear), or bright eyes (happy, excited).'},
+  {e:'❤️',n:'胸口',nEn:'Chest',emots:['開心 😊','難過 😢','愛 🥰','害怕 😨'],emotsEn:['Happy 😊','Sad 😢','Love 🥰','Scared 😨'],info:'胸口是情緒最強烈的地方。開心時溫暖、難過時沉重、愛時跳動、害怕時收緊。',infoEn:'The chest is where emotions feel strongest — warm when happy, heavy when sad, tight when scared.'},
+  {e:'🫁',n:'肚子',nEn:'Stomach',emots:['緊張 😰','害怕 😨','興奮 🤩','挫折 😤'],emotsEn:['Nervous 😰','Scared 😨','Excited 🤩','Frustrated 😤'],info:'肚子對情緒很敏感。「蝴蝶在肚子裡飛」就是緊張或興奮的感覺！',infoEn:'The stomach is very sensitive. "Butterflies in your stomach" means you feel nervous or excited!'},
+  {e:'💪',n:'手臂/手',nEn:'Arms/Hands',emots:['生氣 😠','緊張 😰','自信 😎','想擁抱 🤗'],emotsEn:['Angry 😠','Nervous 😰','Confident 😎','Want to hug 🤗'],info:'生氣時拳頭握緊；緊張時手心出汗；開心時想要擁抱別人。',infoEn:'Fists clench when angry; palms sweat when nervous; arms open wide when happy and wanting to hug.'},
+  {e:'🦵',n:'腿/腳',nEn:'Legs/Feet',emots:['害怕 😨','興奮 🤩','無聊 😒','躁動 😤'],emotsEn:['Scared 😨','Excited 🤩','Bored 😒','Restless 😤'],info:'害怕時腿軟；興奮時踮腳；無聊時不停抖腳！',infoEn:'Legs go weak when scared; you bounce on your toes when excited; feet tap when bored!'},
+  {e:'😶',n:'臉部',nEn:'Face',emots:['開心 😊','尷尬 😳','生氣 😠','難過 😢'],emotsEn:['Happy 😊','Embarrassed 😳','Angry 😠','Sad 😢'],info:'臉部最直接表現情緒：微笑、皺眉、臉紅、眼淚——臉是情緒的窗戶。',infoEn:'The face shows emotions most clearly — smiles, frowns, blushing, tears. The face is the window to feelings.'},
 ];
 
 const STRENGTHS=[
-  {e:'🎨',n:'創意',d:'你有很多新奇的想法'},
-  {e:'💪',n:'勇敢',d:'面對困難不退縮'},
-  {e:'❤️',n:'善良',d:'關心並幫助他人'},
-  {e:'📚',n:'好學',d:'喜歡學習新事物'},
-  {e:'😄',n:'幽默',d:'讓大家開心笑'},
-  {e:'🤝',n:'合作',d:'喜歡和他人一起'},
-  {e:'⚡',n:'積極',d:'做事充滿幹勁'},
-  {e:'🎯',n:'專注',d:'做事認真到底'},
-  {e:'🌱',n:'耐心',d:'等待不會慌'},
-  {e:'🌟',n:'自信',d:'相信自己做得到'},
-  {e:'💡',n:'聰明',d:'解決問題有辦法'},
-  {e:'🎵',n:'熱情',d:'對喜歡的事全力投入'},
+  {e:'🎨',n:'創意',nEn:'Creative',d:'你有很多新奇的想法',dEn:'You come up with great new ideas'},
+  {e:'💪',n:'勇敢',nEn:'Brave',d:'面對困難不退縮',dEn:'You face challenges without giving up'},
+  {e:'❤️',n:'善良',nEn:'Kind',d:'關心並幫助他人',dEn:'You care about and help others'},
+  {e:'📚',n:'好學',nEn:'Curious',d:'喜歡學習新事物',dEn:'You love learning new things'},
+  {e:'😄',n:'幽默',nEn:'Funny',d:'讓大家開心笑',dEn:'You make everyone laugh and smile'},
+  {e:'🤝',n:'合作',nEn:'Teamwork',d:'喜歡和他人一起',dEn:'You love working with others'},
+  {e:'⚡',n:'積極',nEn:'Energetic',d:'做事充滿幹勁',dEn:'You approach tasks with enthusiasm'},
+  {e:'🎯',n:'專注',nEn:'Focused',d:'做事認真到底',dEn:'You concentrate and see things through'},
+  {e:'🌱',n:'耐心',nEn:'Patient',d:'等待不會慌',dEn:'You stay calm when waiting'},
+  {e:'🌟',n:'自信',nEn:'Confident',d:'相信自己做得到',dEn:'You believe in yourself'},
+  {e:'💡',n:'聰明',nEn:'Smart',d:'解決問題有辦法',dEn:'You find ways to solve problems'},
+  {e:'🎵',n:'熱情',nEn:'Passionate',d:'對喜歡的事全力投入',dEn:'You give everything to what you love'},
 ];
 
 const PERSPECTIVES=[
@@ -1349,23 +1349,31 @@ function renderEmotionWheel(c,aid){
 // ═══════════════════════════════
 function renderBodyMap(c,aid){
   const a=ACTS[aid];
-  c.innerHTML=`<div class="card"><p style="font-size:.88rem;color:#666;line-height:1.65">點擊身體的不同部位，看看情緒藏在哪裡！了解自己的身體感受，是情緒覺察的第一步。</p></div>
-    <div class="card"><div class="bm-wrap">
-      <div class="bm-fig" id="bm-fig"></div>
-      <div class="bm-info"><h4 id="bm-title">👆 點一個身體部位</h4><div id="bm-chips"></div><div id="bm-desc" style="margin-top:10px;font-size:.84rem;color:#555;line-height:1.65"></div></div>
-    </div></div>
-    <div class="btn-row"><button class="btn" style="--acc:#FF6B9D" onclick="addXP(${a.xp},'${aid}')">✅ 我了解情緒住在身體裡！</button></div>`;
+  c.innerHTML=`<div class="card"><p style="font-size:.88rem;color:#666;line-height:1.65">
+    <span class="zh">點擊身體的不同部位，看看情緒藏在哪裡！了解自己的身體感受，是情緒覺察的第一步。</span>
+    <span class="en-sub">Tap each body part to see which emotions live there! Understanding body feelings is the first step to self-awareness.</span>
+  </p></div>
+  <div class="card"><div class="bm-wrap">
+    <div class="bm-fig" id="bm-fig"></div>
+    <div class="bm-info">
+      <h4 id="bm-title"><span class="zh">👆 點一個身體部位</span><span class="en-sub">👆 Tap a body part</span></h4>
+      <div id="bm-chips"></div>
+      <div id="bm-desc" style="margin-top:10px;font-size:.84rem;color:#555;line-height:1.65"></div>
+    </div>
+  </div></div>
+  <div class="btn-row"><button class="btn" style="--acc:#FF6B9D" onclick="addXP(${a.xp},'${aid}')">✅ <span class="zh">我了解情緒住在身體裡！</span><span class="en-sub">Emotions live in my body!</span></button></div>`;
   const fig=document.getElementById('bm-fig');
-  BODY_ZONES.forEach((z,i)=>{
+  BODY_ZONES.forEach(z=>{
     const d=document.createElement('div');
     d.className='bz';
-    d.innerHTML=`<div class="bze">${z.e}</div><div class="bzn">${z.n}</div>`;
+    d.innerHTML=`<div class="bze">${z.e}</div><div class="bzn"><span class="zh">${z.n}</span><span class="en-sub">${z.nEn}</span></div>`;
     d.onclick=()=>{
       document.querySelectorAll('.bz').forEach(x=>x.classList.remove('act'));
       d.classList.add('act');
-      document.getElementById('bm-title').textContent=`${z.e} ${z.n}的情緒`;
-      document.getElementById('bm-chips').innerHTML=z.emots.map(e=>`<span class="e-chip">${e}</span>`).join('');
-      document.getElementById('bm-desc').textContent=z.info;
+      document.getElementById('bm-title').innerHTML=`${z.e} <span class="zh">${z.n}的情緒</span><span class="en-sub">Emotions in the ${z.nEn}</span>`;
+      const chips=isEN()?(z.emotsEn||z.emots):z.emots;
+      document.getElementById('bm-chips').innerHTML=chips.map(e=>`<span class="e-chip">${e}</span>`).join('');
+      document.getElementById('bm-desc').textContent=isEN()?(z.infoEn||z.info):z.info;
     };
     fig.appendChild(d);
   });
@@ -1376,17 +1384,19 @@ function renderBodyMap(c,aid){
 // ═══════════════════════════════
 function renderStrengths(c,aid){
   const a=ACTS[aid];
-  if(S.strsel.length>0){}
-  c.innerHTML=`<div class="card"><p style="font-size:.88rem;color:#666;line-height:1.65">選出 <strong>3個最符合你的優點</strong>！每個人都有獨特的優點，認識它們能讓你更有自信。</p></div>
-    <div class="str-grid" id="str-grid"></div>
-    <div class="str-info" id="str-info"></div>
-    <div id="str-selected" style="margin-top:12px;display:flex;flex-wrap:wrap;gap:8px"></div>
-    <div class="btn-row" id="str-btn-row"></div>`;
+  c.innerHTML=`<div class="card"><p style="font-size:.88rem;color:#666;line-height:1.65">
+    <span class="zh">選出 <strong>3個最符合你的優點</strong>！每個人都有獨特的優點，認識它們能讓你更有自信。</span>
+    <span class="en-sub">Pick <strong>3 strengths</strong> that best describe you! Everyone has unique strengths — knowing yours builds confidence.</span>
+  </p></div>
+  <div class="str-grid" id="str-grid"></div>
+  <div class="str-info" id="str-info"></div>
+  <div id="str-selected" style="margin-top:12px;display:flex;flex-wrap:wrap;gap:8px"></div>
+  <div class="btn-row" id="str-btn-row"></div>`;
   const sg=document.getElementById('str-grid');
   STRENGTHS.forEach((s,i)=>{
     const d=document.createElement('div');
     d.className='str'+(S.strsel.includes(i)?' sel':'');
-    d.innerHTML=`<div class="se">${s.e}</div><div class="sn">${s.n}</div>`;
+    d.innerHTML=`<div class="se">${s.e}</div><div class="sn"><span class="zh">${s.n}</span><span class="en-sub">${s.nEn}</span></div>`;
     d.onclick=()=>toggleStr(i,d,s);
     sg.appendChild(d);
   });
@@ -1396,22 +1406,24 @@ function renderStrengths(c,aid){
       S.strsel.splice(S.strsel.indexOf(i),1);
       d.classList.remove('sel');
     }else{
-      if(S.strsel.length>=3){toast('最多選3個優點喔！');return;}
+      if(S.strsel.length>=3){toast(t('最多選3個優點喔！','Max 3 strengths!'));return;}
       S.strsel.push(i);d.classList.add('sel');
       const info=document.getElementById('str-info');
       info.className='str-info show';
-      info.innerHTML=`<div style="font-size:1.2rem">${s.e} <strong>${s.n}</strong></div><div style="font-size:.86rem;color:#666;margin-top:6px">${s.d}</div><div style="font-size:.82rem;color:#A29BFE;font-weight:700;margin-top:8px">💡 你可以用這個優點幫助身邊的人！</div>`;
+      info.innerHTML=`<div style="font-size:1.2rem">${s.e} <strong><span class="zh">${s.n}</span><span class="en-sub">${s.nEn}</span></strong></div>
+        <div style="font-size:.86rem;color:#666;margin-top:6px"><span class="zh">${s.d}</span><span class="en-sub">${s.dEn}</span></div>
+        <div style="font-size:.82rem;color:#A29BFE;font-weight:700;margin-top:8px">💡 <span class="zh">你可以用這個優點幫助身邊的人！</span><span class="en-sub">You can use this strength to help others!</span></div>`;
     }
     save();updateStrBtn();
   }
   function updateStrBtn(){
     const row=document.getElementById('str-btn-row');
     const sel=document.getElementById('str-selected');
-    sel.innerHTML=S.strsel.map(i=>`<span style="background:#FFF0F6;border-radius:20px;padding:5px 13px;font-size:.83rem;font-weight:700">${STRENGTHS[i].e} ${STRENGTHS[i].n}</span>`).join('');
+    sel.innerHTML=S.strsel.map(i=>`<span style="background:#FFF0F6;border-radius:20px;padding:5px 13px;font-size:.83rem;font-weight:700">${STRENGTHS[i].e} <span class="zh">${STRENGTHS[i].n}</span><span class="en-sub">${STRENGTHS[i].nEn}</span></span>`).join('');
     if(S.strsel.length>=3){
-      row.innerHTML=`<button class="btn" style="--acc:#FF6B9D" onclick="addXP(${a.xp},'${aid}')">✅ 這就是我的優點！</button>`;
+      row.innerHTML=`<button class="btn" style="--acc:#FF6B9D" onclick="addXP(${a.xp},'${aid}')">✅ <span class="zh">這就是我的優點！</span><span class="en-sub">These are my strengths!</span></button>`;
     }else{
-      row.innerHTML=`<span style="font-size:.84rem;color:#aaa">還可以選 ${3-S.strsel.length} 個優點</span>`;
+      row.innerHTML=`<span style="font-size:.84rem;color:#aaa"><span class="zh">還可以選 ${3-S.strsel.length} 個優點</span><span class="en-sub">Pick ${3-S.strsel.length} more</span></span>`;
     }
   }
 }
@@ -1421,60 +1433,72 @@ function renderStrengths(c,aid){
 // ═══════════════════════════════
 function renderBreathing(c,aid){
   const a=ACTS[aid];
-  let timer=null,phase=0,count=0,rounds=0;
+  let timer=null,rounds=0;
   const techs=[
-    {n:'4-7-8法',story:'想像你在大海邊，海浪聲幫助你放鬆…',i:4,h:7,ex:8,color:'#6C5CE7'},
-    {n:'方塊呼吸',story:'想像你在畫一個正方形，每邊都是平靜的…',i:4,h:4,ex:4,color:'#4ECDC4'},
-    {n:'深呼吸',story:'想像你是一棵大樹，呼吸帶來力量…',i:3,h:0,ex:6,color:'#51CF66'},
+    {n:'4-7-8法',nEn:'4-7-8 Breath',story:'想像你在大海邊，海浪聲幫助你放鬆…',storyEn:'Imagine you are by the ocean. The sound of waves helps you relax…',i:4,h:7,ex:8,color:'#6C5CE7'},
+    {n:'方塊呼吸',nEn:'Box Breathing',story:'想像你在畫一個正方形，每邊都是平靜的…',storyEn:'Imagine drawing a square. Each side brings calm…',i:4,h:4,ex:4,color:'#4ECDC4'},
+    {n:'深呼吸',nEn:'Deep Breath',story:'想像你是一棵大樹，呼吸帶來力量…',storyEn:'Imagine you are a tall tree. Each breath brings strength…',i:3,h:0,ex:6,color:'#51CF66'},
   ];
   let selT=0;
-  c.innerHTML=`<div style="display:flex;gap:8px;margin-bottom:14px" id="tech-tabs"></div>
+  c.innerHTML=`<div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap" id="tech-tabs"></div>
     <div class="br-scene">
       <div class="br-story" id="br-story"></div>
-      <div class="br-orb" id="br-orb">準備</div>
+      <div class="br-orb" id="br-orb"><span class="zh">準備</span><span class="en-sub">Ready</span></div>
       <div class="br-phase" id="br-phase"></div>
-      <div class="br-info" id="br-info">已完成 <span id="br-rounds">0</span> 輪（目標 3 輪）</div>
+      <div class="br-info" id="br-info">
+        <span class="zh">已完成 <span id="br-rounds">0</span> 輪（目標 3 輪）</span>
+        <span class="en-sub">Completed <span id="br-rounds-en">0</span> rounds (goal: 3)</span>
+      </div>
     </div>
     <div class="btn-row">
-      <button class="btn" id="br-start" style="--acc:#A29BFE">開始練習</button>
-      <button class="btn2" id="br-stop" style="display:none">停止</button>
+      <button class="btn" id="br-start" style="--acc:#A29BFE"><span class="zh">開始練習</span><span class="en-sub">Start</span></button>
+      <button class="btn2" id="br-stop" style="display:none"><span class="zh">停止</span><span class="en-sub">Stop</span></button>
     </div>
     <div id="br-done-row" style="margin-top:12px"></div>`;
   const tabs=document.getElementById('tech-tabs');
-  techs.forEach((t,i)=>{
+  techs.forEach((tech,i)=>{
     const b=document.createElement('button');
-    b.className='btn2';b.style.fontSize='.8rem';b.textContent=t.n;
-    b.onclick=()=>{selT=i;tabs.querySelectorAll('button').forEach((x,j)=>x.style.background=j===i?'#A29BFE':'#F0F0F0');b.style.color=i===0?'#fff':'#555';document.getElementById('br-story').textContent=t.story;stop_breath();};
+    b.className='btn2';b.style.fontSize='.8rem';
+    b.innerHTML=`<span class="zh">${tech.n}</span><span class="en-sub">${tech.nEn}</span>`;
+    b.onclick=()=>{
+      selT=i;
+      tabs.querySelectorAll('button').forEach((x,j)=>{x.style.background=j===i?'#A29BFE':'#F0F0F0';x.style.color=j===i?'#fff':'#555';});
+      document.getElementById('br-story').textContent=isEN()?tech.storyEn:tech.story;
+      stop_breath();
+    };
     tabs.appendChild(b);
   });
-  document.getElementById('br-story').textContent=techs[0].story;
+  document.getElementById('br-story').textContent=isEN()?techs[0].storyEn:techs[0].story;
   const orb=document.getElementById('br-orb');
   const ph=document.getElementById('br-phase');
   function stop_breath(){
     clearTimeout(timer);timer=null;
     document.getElementById('br-start').style.display='';
     document.getElementById('br-stop').style.display='none';
-    orb.textContent='準備';orb.style.transform='scale(1)';ph.textContent='';
+    orb.innerHTML=`<span class="zh">準備</span><span class="en-sub">Ready</span>`;
+    orb.style.transform='scale(1)';ph.textContent='';
   }
   function tick_breath(){
-    const t=techs[selT];
+    const tech=techs[selT];
+    const IN=t('吸氣','Inhale'),HOLD=t('憋氣','Hold'),OUT=t('呼氣','Exhale');
     const phases=[];
-    for(let i=t.i;i>=1;i--)phases.push({l:`吸氣 ${i}`,sc:1+.5*(t.i-i)/t.i});
-    if(t.h>0)for(let i=t.h;i>=1;i--)phases.push({l:`憋氣 ${i}`,sc:1.5});
-    for(let i=t.ex;i>=1;i--)phases.push({l:`呼氣 ${i}`,sc:1.5-.5*(t.ex-i)/t.ex});
+    for(let i=tech.i;i>=1;i--)phases.push({l:`${IN} ${i}`,sc:1+.5*(tech.i-i)/tech.i});
+    if(tech.h>0)for(let i=tech.h;i>=1;i--)phases.push({l:`${HOLD} ${i}`,sc:1.5});
+    for(let i=tech.ex;i>=1;i--)phases.push({l:`${OUT} ${i}`,sc:1.5-.5*(tech.ex-i)/tech.ex});
     let p=0;
     function tick(){
       if(p>=phases.length){
-        rounds++;document.getElementById('br-rounds').textContent=rounds;
+        rounds++;
+        document.getElementById('br-rounds').textContent=rounds;
+        document.getElementById('br-rounds-en').textContent=rounds;
         if(rounds>=3){
-          document.getElementById('br-done-row').innerHTML=`<button class="btn" style="--acc:#A29BFE" onclick="addXP(${a.xp},'${aid}');stop_breath()">🎉 完成3輪！領取獎勵</button>`;
+          document.getElementById('br-done-row').innerHTML=`<button class="btn" style="--acc:#A29BFE" onclick="addXP(${a.xp},'${aid}');stop_breath()">🎉 <span class="zh">完成3輪！領取獎勵</span><span class="en-sub">3 rounds done! Claim reward</span></button>`;
         }
         p=0;timer=setTimeout(tick,800);return;
       }
-      const pp=phases[p];
-      ph.textContent=pp.l;
+      ph.textContent=phases[p].l;
       orb.style.transition='transform .95s ease';
-      orb.style.transform=`scale(${pp.sc})`;
+      orb.style.transform=`scale(${phases[p].sc})`;
       p++;timer=setTimeout(tick,1000);
     }
     tick();
@@ -1485,7 +1509,6 @@ function renderBreathing(c,aid){
     tick_breath();
   };
   document.getElementById('br-stop').onclick=stop_breath;
-  // expose stop_breath globally for button
   window.stop_breath=stop_breath;
 }
 
@@ -1495,53 +1518,62 @@ function renderBreathing(c,aid){
 function renderThermometer(c,aid){
   const a=ACTS[aid];
   const levels=[
-    {min:0,max:2,e:'😌',l:'非常平靜',color:'#55EFC4'},
-    {min:3,max:4,e:'😊',l:'有點不舒服',color:'#FDCB6E'},
-    {min:5,max:6,e:'😟',l:'中等強度',color:'#FFA726'},
-    {min:7,max:8,e:'😤',l:'很強烈',color:'#FF7675'},
-    {min:9,max:10,e:'🤯',l:'超強烈！需要立刻處理',color:'#D63031'},
+    {min:0,max:2,e:'😌',l:'非常平靜',lEn:'Very Calm',color:'#55EFC4'},
+    {min:3,max:4,e:'😊',l:'有點不舒服',lEn:'Slightly Uncomfortable',color:'#FDCB6E'},
+    {min:5,max:6,e:'😟',l:'中等強度',lEn:'Moderate Intensity',color:'#FFA726'},
+    {min:7,max:8,e:'😤',l:'很強烈',lEn:'Very Intense',color:'#FF7675'},
+    {min:9,max:10,e:'🤯',l:'超強烈！需要立刻處理',lEn:'Overwhelming! Act now.',color:'#D63031'},
   ];
   const cops=[
-    {e:'🫁',n:'深呼吸'},
-    {e:'🚶',n:'走一走'},
-    {e:'💧',n:'喝水'},
-    {e:'🎵',n:'聽音樂'},
-    {e:'✍️',n:'寫下來'},
-    {e:'🗣️',n:'說出來'},
-    {e:'🤗',n:'找人陪'},
-    {e:'🎨',n:'畫一畫'},
+    {e:'🫁',n:'深呼吸',nEn:'Deep Breath'},
+    {e:'🚶',n:'走一走',nEn:'Take a Walk'},
+    {e:'💧',n:'喝水',nEn:'Drink Water'},
+    {e:'🎵',n:'聽音樂',nEn:'Listen to Music'},
+    {e:'✍️',n:'寫下來',nEn:'Write It Down'},
+    {e:'🗣️',n:'說出來',nEn:'Talk It Out'},
+    {e:'🤗',n:'找人陪',nEn:'Find Someone'},
+    {e:'🎨',n:'畫一畫',nEn:'Draw It Out'},
   ];
-  c.innerHTML=`<div class="card"><p style="font-size:.88rem;color:#666;line-height:1.65">拖動滑桿，標示你現在（或某個情境下）的情緒強度，再選擇適合的應對策略！</p></div>
-    <div class="card"><div class="thw">
-      <div class="th-emoji" id="th-e">😌</div>
-      <div class="th-label" id="th-l">非常平靜 (0)</div>
-      <input type="range" min="0" max="10" value="0" id="th-slider" style="background:linear-gradient(90deg,#55EFC4,#D63031)">
-    </div></div>
-    <div class="card"><div class="sec-title" style="font-size:.88rem;margin-bottom:10px">選擇 2 個應對策略：</div>
-      <div class="cop-grid" id="cop-grid"></div>
-      <div id="th-fb" style="margin-top:10px;font-size:.85rem;color:#666"></div>
+  const initLv=levels[0];
+  c.innerHTML=`<div class="card"><p style="font-size:.88rem;color:#666;line-height:1.65">
+    <span class="zh">拖動滑桿，標示你現在的情緒強度，再選擇適合的應對策略！</span>
+    <span class="en-sub">Drag the slider to rate your emotion intensity, then choose 2 coping strategies!</span>
+  </p></div>
+  <div class="card"><div class="thw">
+    <div class="th-emoji" id="th-e">${initLv.e}</div>
+    <div class="th-label" id="th-l">${t(initLv.l,initLv.lEn)} (0)</div>
+    <input type="range" min="0" max="10" value="0" id="th-slider" style="background:linear-gradient(90deg,#55EFC4,#D63031)">
+  </div></div>
+  <div class="card">
+    <div class="sec-title" style="font-size:.88rem;margin-bottom:10px">
+      <span class="zh">選擇 2 個應對策略：</span><span class="en-sub">Choose 2 coping strategies:</span>
     </div>
-    <div class="btn-row" id="th-btn"></div>`;
+    <div class="cop-grid" id="cop-grid"></div>
+    <div id="th-fb" style="margin-top:10px;font-size:.85rem;color:#666"></div>
+  </div>
+  <div class="btn-row" id="th-btn"></div>`;
   const sl=document.getElementById('th-slider');
   let copSel=[];
   sl.oninput=()=>{
     const v=parseInt(sl.value);
     const lv=levels.find(l=>v>=l.min&&v<=l.max);
     document.getElementById('th-e').textContent=lv.e;
-    document.getElementById('th-l').textContent=`${lv.l} (${v})`;
+    document.getElementById('th-l').textContent=`${t(lv.l,lv.lEn)} (${v})`;
   };
   const cg=document.getElementById('cop-grid');
   cops.forEach((cp,i)=>{
     const d=document.createElement('div');d.className='cop';
-    d.innerHTML=`<div class="ce">${cp.e}</div><div class="cn">${cp.n}</div>`;
+    d.innerHTML=`<div class="ce">${cp.e}</div><div class="cn"><span class="zh">${cp.n}</span><span class="en-sub">${cp.nEn}</span></div>`;
     d.onclick=()=>{
       if(copSel.includes(i)){copSel.splice(copSel.indexOf(i),1);d.style.borderColor='#E0E0E0';d.style.background='#fff';}
       else{
-        if(copSel.length>=2){toast('最多選2個策略！');return;}
+        if(copSel.length>=2){toast(t('最多選2個策略！','Max 2 strategies!'));return;}
         copSel.push(i);d.style.borderColor='#A29BFE';d.style.background='#F5F0FF';
       }
-      document.getElementById('th-fb').textContent=copSel.length>0?`✅ 已選擇：${copSel.map(x=>cops[x].n).join('、')}. 這些都是很棒的策略！`:'';
-      if(copSel.length===2)document.getElementById('th-btn').innerHTML=`<button class="btn" style="--acc:#A29BFE" onclick="addXP(${a.xp},'${aid}')">✅ 我學會調節情緒了！</button>`;
+      const names=copSel.map(x=>t(cops[x].n,cops[x].nEn)).join(', ');
+      document.getElementById('th-fb').textContent=copSel.length>0
+        ? `✅ ${t('已選擇：','Selected: ')}${names}. ${t('這些都是很棒的策略！','Great choices!')}`:'';
+      if(copSel.length===2)document.getElementById('th-btn').innerHTML=`<button class="btn" style="--acc:#A29BFE" onclick="addXP(${a.xp},'${aid}')">✅ <span class="zh">我學會調節情緒了！</span><span class="en-sub">I can manage my emotions!</span></button>`;
     };
     cg.appendChild(d);
   });
