@@ -1,0 +1,1504 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEL 情緒冒險家</title>
+<style>
+:root{--aw:#FF6B9D;--mg:#A29BFE;--sc:#4ECDC4;--rs:#FFA726;--dm:#66BB6A;--bg:#F0F4FF;--card:#fff;--text:#2D3436;--sh:0 4px 20px rgba(0,0,0,.1)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI','微軟正黑體',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:72px}
+
+/* HEADER */
+#hdr{position:sticky;top:0;z-index:100;background:#fff;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 10px rgba(0,0,0,.09)}
+#hdr-back{width:36px;height:36px;background:#F0F0F0;border:none;border-radius:50%;font-size:1.1rem;cursor:pointer;display:none;align-items:center;justify-content:center}
+#hdr-back.show{display:flex}
+#hdr-title{font-size:1.05rem;font-weight:800}
+#hdr-xp{display:flex;align-items:center;gap:6px;background:#FFF8E1;border-radius:20px;padding:6px 14px;cursor:pointer}
+#xp-val{font-size:1rem;font-weight:800;color:#F59E0B}
+
+/* SCREENS */
+.screen{display:none;padding:16px;max-width:680px;margin:0 auto}
+.screen.active{display:block}
+
+/* BOTTOM NAV */
+#bnav{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:space-around;padding:8px 0;box-shadow:0 -2px 10px rgba(0,0,0,.09);z-index:50}
+.bn{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 12px;cursor:pointer;border:none;background:none;font-family:inherit;opacity:.45;transition:opacity .2s}
+.bn.active{opacity:1}
+.bn .bi{font-size:1.4rem}
+.bn .bl{font-size:.63rem;font-weight:700}
+
+/* HOME */
+.hero{background:linear-gradient(135deg,#667EEA,#764BA2);border-radius:22px;padding:20px 20px 18px;color:#fff;margin-bottom:20px;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;top:-40px;right:-40px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,.08);pointer-events:none}
+.hero-top{display:flex;align-items:center;gap:14px}
+.hero-av-wrap{position:relative;flex-shrink:0}
+.hero .av{font-size:3.4rem;width:72px;height:72px;background:rgba(255,255,255,.18);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .2s;border:3px solid rgba(255,255,255,.4)}
+.hero .av:hover{transform:scale(1.08)}
+.av-edit{position:absolute;bottom:-2px;right:-2px;background:#FFE66D;color:#2D3436;font-size:.7rem;font-weight:800;border-radius:99px;padding:2px 6px;cursor:pointer}
+.hero-info{flex:1;text-align:left}
+.hero h2{font-size:1.15rem;font-weight:800;margin-bottom:2px}
+.hero .sub{opacity:.8;font-size:.8rem}
+.lv-badge{display:inline-block;background:rgba(255,255,255,.25);border-radius:20px;padding:3px 12px;font-size:.78rem;font-weight:700;margin-top:5px}
+.hero-stats{display:flex;gap:0;margin-top:14px;background:rgba(0,0,0,.15);border-radius:14px;overflow:hidden}
+.hs{flex:1;padding:9px 6px;text-align:center;border-right:1px solid rgba(255,255,255,.12)}
+.hs:last-child{border-right:none}
+.hs-num{font-size:1.3rem;font-weight:900}
+.hs-lbl{font-size:.65rem;opacity:.75;margin-top:1px}
+.xp-track{margin-top:13px}
+.xp-track-label{display:flex;justify-content:space-between;font-size:.72rem;opacity:.8;margin-bottom:5px}
+.xp-bar{background:rgba(0,0,0,.2);border-radius:99px;height:8px;overflow:hidden}
+.xp-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#FFE66D,#FF6B9D);transition:width .6s}
+/* AVATAR PICKER */
+.av-picker{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;padding:14px}
+.avp{font-size:1.8rem;text-align:center;cursor:pointer;border-radius:12px;padding:8px;border:3px solid transparent;transition:all .2s;background:#F8F9FA}
+.avp:hover,.avp.sel{border-color:#667EEA;background:#EEF2FF;transform:scale(1.12)}
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:flex;align-items:flex-end;justify-content:center}
+.modal-box{background:#fff;border-radius:22px 22px 0 0;width:100%;max-width:680px;padding:20px;animation:slideUp .3s ease}
+@keyframes slideUp{from{transform:translateY(60px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-box h3{font-size:1rem;font-weight:800;margin-bottom:4px}
+.modal-close{float:right;background:none;border:none;font-size:1.4rem;cursor:pointer;line-height:1}
+.sec-title{font-size:1rem;font-weight:800;color:#555;margin-bottom:12px}
+.domain-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:20px}
+.dc{background:#fff;border-radius:18px;padding:16px 13px;cursor:pointer;box-shadow:var(--sh);transition:transform .2s,box-shadow .2s;position:relative;overflow:hidden}
+.dc:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.14)}
+.dc::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--dc)}
+.dc .de{font-size:2rem;margin-bottom:7px}
+.dc .dn{font-size:.85rem;font-weight:800}
+.dc .dd{font-size:.73rem;color:#888;margin-top:2px}
+.dc .dpb{height:4px;background:#F0F0F0;border-radius:99px;margin-top:10px}
+.dc .dpf{height:100%;border-radius:99px;transition:width .5s}
+
+/* DOMAIN PAGE */
+.dh{border-radius:20px;padding:18px 20px;color:#fff;margin-bottom:18px;display:flex;align-items:center;gap:14px}
+.dh .dhe{font-size:3rem}
+.dh h2{font-size:1.2rem;font-weight:800}
+.dh p{font-size:.85rem;opacity:.9;margin-top:3px}
+.act-list{display:flex;flex-direction:column;gap:10px}
+.ac{background:#fff;border-radius:16px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:13px;box-shadow:0 2px 10px rgba(0,0,0,.07);transition:transform .2s,box-shadow .2s}
+.ac:hover{transform:translateX(5px);box-shadow:0 4px 18px rgba(0,0,0,.12)}
+.ac.locked{opacity:.45;cursor:default}
+.ac .ai{font-size:1.9rem;width:50px;height:50px;background:#F5F5F5;border-radius:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ac .ainfo{flex:1}
+.ac .an{font-size:.93rem;font-weight:700}
+.ac .ad{font-size:.77rem;color:#888;margin-top:2px}
+.ac .axp{font-size:.75rem;font-weight:700;color:#F59E0B;margin-top:3px}
+.lv-tag{font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:10px;display:inline-block;margin-top:3px}
+.lv1{background:#E8F5E9;color:#2E7D32}
+.lv2{background:#E3F2FD;color:#1565C0}
+.lv3{background:#FCE4EC;color:#880E4F}
+.ac .adone{font-size:1.3rem;margin-left:auto}
+
+/* ACTIVITY */
+.ah-card{background:#fff;border-radius:16px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px;box-shadow:var(--sh)}
+.ah-card .ahi{font-size:2rem}
+.ah-card .ahn{font-size:1rem;font-weight:800}
+.ah-card .ahd{font-size:.78rem;color:#888;margin-top:2px}
+
+/* SHARED */
+.card{background:#fff;border-radius:16px;padding:16px;box-shadow:var(--sh);margin-bottom:12px}
+.btn{background:var(--acc,#A29BFE);color:#fff;border:none;border-radius:12px;padding:11px 26px;font-size:.92rem;font-weight:700;cursor:pointer;font-family:inherit;transition:transform .15s,opacity .15s}
+.btn:hover{transform:translateY(-2px);opacity:.9}
+.btn2{background:#F0F0F0;color:#555;border:none;border-radius:12px;padding:10px 20px;font-size:.88rem;font-weight:600;cursor:pointer;font-family:inherit}
+.btn-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+.cb{display:block;width:100%;background:#F8F9FA;border:2px solid #E0E0E0;border-radius:12px;padding:11px 15px;text-align:left;font-size:.9rem;cursor:pointer;margin-bottom:8px;transition:all .2s;font-family:inherit}
+.cb:hover:not(:disabled){background:#EEF6FF;border-color:#A29BFE;transform:translateX(4px)}
+.cb.correct{background:#D3F9D8;border-color:#51CF66}
+.cb.wrong{background:#FFE3E3;border-color:#FF6B6B}
+.cb.neutral{background:#FFF3CD;border-color:#FFE66D}
+.fb{background:#F0F6FF;border-radius:12px;padding:14px;display:none;font-size:.9rem;line-height:1.65;border-left:4px solid #A29BFE;margin-top:8px}
+.fb.show{display:block}
+.xp-reward{display:inline-block;background:#FFF8E1;color:#F59E0B;font-weight:800;font-size:.85rem;padding:4px 12px;border-radius:20px;margin-top:10px}
+
+/* EMOTION WHEEL */
+.ew-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:14px}
+.ew{border-radius:14px;padding:13px 7px;text-align:center;cursor:pointer;transition:transform .2s,box-shadow .2s;border:3px solid transparent}
+.ew:hover{transform:scale(1.08)}
+.ew.sel{border-color:#2D3436;box-shadow:0 4px 16px rgba(0,0,0,.2)}
+.ew .ee{font-size:1.9rem}
+.ew .en{font-size:.74rem;font-weight:700;margin-top:5px}
+.edt{background:linear-gradient(135deg,#fff0f6,#fff);border-radius:16px;padding:16px;box-shadow:var(--sh)}
+.edt h3{font-size:1rem;margin-bottom:8px}
+.edt-sec{margin-top:9px}
+.edt-lbl{font-size:.73rem;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.edt-txt{font-size:.86rem;color:#444;line-height:1.65}
+.e-rate{display:flex;gap:7px;margin-top:10px;align-items:center}
+.er-s{font-size:1.3rem;cursor:pointer;opacity:.3;transition:opacity .15s}
+.er-s.lit{opacity:1}
+
+/* BODY MAP */
+.bm-wrap{display:flex;gap:14px}
+.bm-fig{display:flex;flex-direction:column;gap:6px;width:135px;flex-shrink:0}
+.bz{border-radius:11px;padding:9px 6px;text-align:center;cursor:pointer;border:2px solid transparent;transition:all .2s;background:#F0F0F0}
+.bz:hover{background:#E0E0E0}
+.bz.act{border-color:var(--acc,#FF6B9D);background:#FFF0F6}
+.bz .bze{font-size:1.3rem}
+.bz .bzn{font-size:.7rem;font-weight:700;margin-top:2px}
+.bm-info{flex:1}
+.bm-info h4{font-size:.95rem;font-weight:800;margin-bottom:9px}
+.e-chip{display:inline-block;background:#F0F0F0;border-radius:20px;padding:4px 11px;font-size:.8rem;margin:3px}
+
+/* THERMOMETER */
+.thw{display:flex;flex-direction:column;align-items:center;gap:14px;padding:8px 0}
+.thw .th-emoji{font-size:3.5rem;transition:all .3s}
+.thw .th-label{font-size:1.1rem;font-weight:800;color:#555}
+input[type=range]{-webkit-appearance:none;width:220px;height:12px;border-radius:99px;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;background:var(--acc,#A29BFE);box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.cop-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;margin-top:10px}
+.cop{border-radius:12px;padding:12px 8px;text-align:center;cursor:pointer;border:2px solid #E0E0E0;background:#fff;transition:all .2s}
+.cop:hover{border-color:var(--acc,#A29BFE);background:#F5F0FF;transform:translateY(-2px)}
+.cop .ce{font-size:1.5rem}
+.cop .cn{font-size:.76rem;font-weight:700;margin-top:4px}
+
+/* BREATHING */
+.br-scene{background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);border-radius:20px;padding:28px 20px;text-align:center;margin-bottom:14px}
+.br-story{color:rgba(255,255,255,.8);font-size:.85rem;line-height:1.6;margin-bottom:14px}
+.br-orb{width:130px;height:130px;border-radius:50%;margin:16px auto;display:flex;align-items:center;justify-content:center;font-size:.95rem;color:#fff;font-weight:700;background:radial-gradient(circle,#A29BFE,#6C5CE7);box-shadow:0 0 50px rgba(162,155,254,.6);transition:transform 0s}
+.br-phase{color:#fff;font-size:1.1rem;font-weight:800;min-height:1.4em}
+.br-info{color:rgba(255,255,255,.5);font-size:.82rem;margin-top:6px}
+
+/* PERSPECTIVE */
+.pc-row{display:flex;gap:9px;margin-bottom:14px}
+.pc{flex:1;border-radius:13px;padding:13px 8px;text-align:center;cursor:pointer;border:2px solid #E0E0E0;background:#fff;transition:all .2s}
+.pc:hover,.pc.act{border-color:var(--acc,#4ECDC4);background:#F0FFFE}
+.pc .pce{font-size:1.9rem}
+.pc .pcn{font-size:.75rem;font-weight:700;margin-top:5px}
+.pb{background:#F0F0F0;border-radius:16px 16px 16px 4px;padding:14px;font-size:.88rem;line-height:1.65;color:#444;min-height:70px;transition:all .3s}
+
+/* COMM STYLES */
+.cs-box{border-radius:13px;padding:13px;margin-bottom:9px;display:flex;gap:11px;align-items:flex-start}
+.cs-box.ag{background:#FFE3E3;border:2px solid #FF6B6B}
+.cs-box.pa{background:#FFF3CD;border:2px solid #FFD700}
+.cs-box.as{background:#D3F9D8;border:2px solid #51CF66}
+.cs-tag{font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap;flex-shrink:0}
+.ag .cs-tag{background:#FF6B6B;color:#fff}
+.pa .cs-tag{background:#FFA500;color:#fff}
+.as .cs-tag{background:#51CF66;color:#fff}
+.cs-txt{font-size:.85rem;line-height:1.6}
+
+/* SORT GAME */
+.sort-wrap{display:flex;gap:10px;margin-bottom:14px}
+.sort-bin{flex:1;background:#F8F9FA;border-radius:14px;padding:12px;min-height:180px;border:2px dashed #E0E0E0;transition:border-color .2s}
+.sort-bin h4{font-size:.82rem;font-weight:700;margin-bottom:8px;text-align:center}
+.sort-bin.good{border-color:#51CF66}
+.sort-bin.bad{border-color:#FF6B6B}
+.si{background:#fff;border-radius:10px;padding:9px 11px;font-size:.82rem;cursor:pointer;margin-bottom:6px;box-shadow:0 2px 6px rgba(0,0,0,.07);transition:transform .15s,box-shadow .15s;border:2px solid transparent;user-select:none}
+.si:hover{transform:translateX(3px);box-shadow:0 3px 10px rgba(0,0,0,.12)}
+.si.placed-good{border-color:#51CF66;background:#D3F9D8}
+.si.placed-bad{border-color:#FF6B6B;background:#FFE3E3}
+
+/* STOP STEPS */
+.stop-steps{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.stop-step{border-radius:14px;padding:14px 16px;display:flex;gap:13px;align-items:flex-start}
+.ss-icon{font-size:1.8rem;flex-shrink:0}
+.ss-title{font-size:.9rem;font-weight:800;margin-bottom:4px}
+.ss-desc{font-size:.82rem;color:#555;line-height:1.6}
+.stop-quiz-box{background:#fff;border-radius:14px;padding:15px;box-shadow:var(--sh)}
+.stop-quiz-box p{font-size:.92rem;font-weight:700;margin-bottom:12px}
+
+/* DECISION TREE */
+.dt-node{background:#fff;border-radius:15px;padding:16px;box-shadow:var(--sh);margin-bottom:12px}
+.dt-q{font-size:.93rem;font-weight:700;margin-bottom:11px;color:#333}
+.dt-path{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.dt-step{background:#E8F4FD;border-radius:8px;padding:3px 10px;font-size:.75rem;font-weight:700;color:#4ECDC4}
+.dt-outcome{border-radius:13px;padding:13px;margin-top:12px;font-size:.88rem;line-height:1.65}
+.dt-outcome.good{background:#D3F9D8;border-left:4px solid #51CF66}
+.dt-outcome.warn{background:#FFF3CD;border-left:4px solid #FFA500}
+.dt-outcome.bad{background:#FFE3E3;border-left:4px solid #FF6B6B}
+
+/* CONSEQUENCE WEB */
+.cw-center{text-align:center;margin-bottom:16px}
+.cw-action{background:var(--acc,#66BB6A);color:#fff;border-radius:13px;padding:11px 20px;font-size:.95rem;font-weight:800;display:inline-block}
+.rpl-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rpl{background:#fff;border-radius:13px;padding:13px;box-shadow:0 2px 8px rgba(0,0,0,.07);border-left:4px solid;opacity:0;transform:translateY(10px);transition:opacity .4s,transform .4s}
+.rpl.show{opacity:1;transform:translateY(0)}
+.rpl .rw{font-size:.73rem;font-weight:700;color:#888;margin-bottom:3px}
+.rpl .re{font-size:.85rem;color:#444;line-height:1.55}
+
+/* PROBLEM SOLVING */
+.ps-steps{counter-reset:ps}
+.ps-step{background:#fff;border-radius:14px;padding:14px 16px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.07);display:flex;gap:12px;align-items:flex-start;counter-increment:ps}
+.ps-num{width:30px;height:30px;border-radius:50%;background:var(--acc,#66BB6A);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.88rem;flex-shrink:0}
+.ps-title{font-size:.9rem;font-weight:800;margin-bottom:4px}
+.ps-field{width:100%;border:2px solid #E0E0E0;border-radius:10px;padding:9px 12px;font-family:inherit;font-size:.85rem;outline:none;transition:border-color .2s;resize:none;min-height:60px}
+.ps-field:focus{border-color:var(--acc,#66BB6A)}
+
+/* GRATITUDE */
+.gr-item{display:flex;align-items:center;gap:10px;background:#fff;border-radius:13px;padding:12px 15px;margin-bottom:9px;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.gr-num{font-size:1.5rem;flex-shrink:0}
+.gr-field{flex:1;border:2px solid #E0E0E0;border-radius:10px;padding:8px 12px;font-family:inherit;font-size:.88rem;outline:none;transition:border-color .2s}
+.gr-field:focus{border-color:#4ECDC4}
+.gr-list{margin-top:16px}
+.gr-entry{background:#E8FDF5;border-radius:13px;padding:12px 15px;margin-bottom:8px;border-left:4px solid #4ECDC4;font-size:.88rem;line-height:1.6}
+.gr-entry .ge-date{font-size:.72rem;color:#888;margin-bottom:4px}
+
+/* STRENGTHS */
+.str-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:14px}
+.str{border-radius:13px;padding:13px 8px;text-align:center;cursor:pointer;border:3px solid #E0E0E0;background:#fff;transition:all .2s}
+.str:hover{transform:translateY(-3px)}
+.str.sel{border-color:var(--acc,#FF6B9D);background:#FFF0F6;box-shadow:0 4px 14px rgba(255,107,157,.25)}
+.str .se{font-size:1.8rem}
+.str .sn{font-size:.76rem;font-weight:700;margin-top:5px}
+.str-info{background:linear-gradient(135deg,#fff0f6,#fff);border-radius:16px;padding:14px;box-shadow:var(--sh);display:none}
+.str-info.show{display:block}
+
+/* PEACE MAKER */
+.pm-steps{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.pm-step{border-radius:14px;padding:14px 16px;border-left:4px solid;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.pm-step h4{font-size:.9rem;font-weight:800;margin-bottom:4px}
+.pm-step p{font-size:.82rem;color:#555;line-height:1.6}
+.pm-step input,.pm-step textarea{width:100%;border:2px solid #E0E0E0;border-radius:10px;padding:8px 12px;font-family:inherit;font-size:.85rem;outline:none;margin-top:7px;transition:border-color .2s}
+.pm-step input:focus,.pm-step textarea:focus{border-color:#FFA726}
+
+/* EMPATHY DETECTIVE */
+.ed-scenario{background:linear-gradient(135deg,#F0F9FF,#fff);border-radius:16px;padding:18px;margin-bottom:14px;box-shadow:var(--sh)}
+.ed-scenario p{font-size:.92rem;color:#444;line-height:1.7;margin-bottom:14px}
+.ed-q{font-size:.95rem;font-weight:700;color:#333;margin-bottom:11px}
+
+/* ACHIEVEMENTS */
+.ach-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+.st-card{background:#fff;border-radius:15px;padding:14px;text-align:center;box-shadow:var(--sh)}
+.st-num{font-size:2rem;font-weight:900}
+.st-lbl{font-size:.72rem;color:#888;margin-top:2px}
+.bdg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}
+.bdg{background:#fff;border-radius:15px;padding:15px 9px;text-align:center;box-shadow:var(--sh);transition:transform .2s}
+.bdg:hover{transform:translateY(-4px)}
+.bdg.locked{filter:grayscale(1) opacity(.45)}
+.bdg .be{font-size:2.3rem}
+.bdg .bn2{font-size:.78rem;font-weight:700;margin-top:7px}
+.bdg .bd{font-size:.68rem;color:#aaa;margin-top:3px}
+.bdg .bk{font-size:.7rem;color:#51CF66;font-weight:700;margin-top:3px}
+.domain-prog{margin-bottom:16px}
+.dp-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.dp-icon{font-size:1.2rem;width:30px;text-align:center}
+.dp-label{font-size:.82rem;font-weight:700;width:70px;flex-shrink:0}
+.dp-bar{flex:1;height:10px;background:#F0F0F0;border-radius:99px;overflow:hidden}
+.dp-fill{height:100%;border-radius:99px;transition:width .6s}
+.dp-pct{font-size:.75rem;color:#888;width:35px;text-align:right}
+
+/* TOAST */
+#toast{position:fixed;bottom:82px;left:50%;transform:translateX(-50%) translateY(60px);background:#2D3436;color:#fff;padding:11px 22px;border-radius:22px;font-size:.92rem;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.25);transition:all .35s;opacity:0;z-index:999;white-space:nowrap;pointer-events:none}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.confetti-piece{position:fixed;width:10px;height:10px;border-radius:2px;opacity:0;pointer-events:none;animation:fall 1.2s ease-in forwards}
+@keyframes fall{0%{opacity:1;transform:translateY(-20px) rotate(0deg)}100%{opacity:0;transform:translateY(80vh) rotate(720deg)}}
+
+@media(max-width:480px){.domain-grid{grid-template-columns:1fr}.ew-grid{grid-template-columns:repeat(3,1fr)}.str-grid{grid-template-columns:repeat(2,1fr)}.bdg-grid{grid-template-columns:repeat(2,1fr)}.bm-wrap{flex-direction:column}.cop-grid{grid-template-columns:1fr}.rpl-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header id="hdr">
+  <button id="hdr-back" onclick="goBack()">←</button>
+  <div id="hdr-title">🌈 SEL 情緒冒險家</div>
+  <div id="hdr-xp" onclick="showScreen('achieve')">⭐ <span id="xp-val">0</span></div>
+</header>
+
+<!-- HOME -->
+<div id="s-home" class="screen active">
+  <div class="hero">
+    <div class="hero-top">
+      <div class="hero-av-wrap">
+        <div class="av" id="av-emoji" onclick="openAvPicker()" title="點我換頭像">🌱</div>
+        <div class="av-edit" onclick="openAvPicker()">換</div>
+      </div>
+      <div class="hero-info">
+        <h2 id="av-name">情緒小探險家</h2>
+        <div class="sub">學習認識自己和他人的感受</div>
+        <div class="lv-badge" id="lv-badge">Lv.1 新手冒險家</div>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="hs"><div class="hs-num" id="h-xp">0</div><div class="hs-lbl">⭐ 總XP</div></div>
+      <div class="hs"><div class="hs-num" id="h-done">0</div><div class="hs-lbl">✅ 活動</div></div>
+      <div class="hs"><div class="hs-num" id="h-bdg">0</div><div class="hs-lbl">🏅 獎章</div></div>
+      <div class="hs"><div class="hs-num" id="h-streak">0</div><div class="hs-lbl">🔥 天連續</div></div>
+    </div>
+    <div class="xp-track">
+      <div class="xp-track-label"><span id="xp-cur-lbl">0 XP</span><span id="xp-next-lbl">下一級：50 XP</span></div>
+      <div class="xp-bar"><div class="xp-fill" id="xp-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div class="sec-title">✨ 五大學習領域</div>
+  <div class="domain-grid" id="domain-grid"></div>
+</div>
+
+<!-- DOMAIN -->
+<div id="s-domain" class="screen">
+  <div class="dh" id="dh"></div>
+  <div class="act-list" id="act-list"></div>
+</div>
+
+<!-- ACTIVITY -->
+<div id="s-activity" class="screen">
+  <div class="ah-card" id="ah-card"></div>
+  <div id="act-content"></div>
+</div>
+
+<!-- ACHIEVEMENT -->
+<div id="s-achieve" class="screen">
+  <div style="font-size:1.4rem;font-weight:800;margin-bottom:16px">🏅 我的成長</div>
+  <div class="ach-stats" id="ach-stats"></div>
+  <div class="card">
+    <div class="sec-title" style="margin-bottom:14px">📊 各領域進度</div>
+    <div class="domain-prog" id="domain-prog"></div>
+  </div>
+  <div class="sec-title">🎖️ 獎章收藏</div>
+  <div class="bdg-grid" id="bdg-grid"></div>
+</div>
+
+<nav id="bnav">
+  <button class="bn active" data-s="home"><div class="bi">🏠</div><div class="bl">首頁</div></button>
+  <button class="bn" data-s="domain-0"><div class="bi">🔍</div><div class="bl">自我覺察</div></button>
+  <button class="bn" data-s="domain-1"><div class="bi">🎮</div><div class="bl">自我管理</div></button>
+  <button class="bn" data-s="domain-2"><div class="bi">👁️</div><div class="bl">社會覺知</div></button>
+  <button class="bn" data-s="domain-3"><div class="bi">🤝</div><div class="bl">人際互動</div></button>
+</nav>
+
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════
+// DATA
+// ═══════════════════════════════
+const DOMAINS=[
+  {id:'aw',name:'自我覺察',desc:'認識自己的情緒與優點',emoji:'🔍',color:'#FF6B9D',
+   sel:'了解自己的情緒、想法與優點，是所有SEL學習的基礎',
+   activities:['aw1','aw2','aw3']},
+  {id:'mg',name:'自我管理',desc:'調節情緒，面對挑戰',emoji:'🎮',color:'#A29BFE',
+   sel:'學習控制衝動、管理情緒、設定目標並堅持下去',
+   activities:['mg1','mg2','mg3']},
+  {id:'sc',name:'社會覺知',desc:'理解他人的感受與需求',emoji:'👁️',color:'#4ECDC4',
+   sel:'能站在他人立場思考，理解不同背景的人',
+   activities:['sc1','sc2','sc3']},
+  {id:'rs',name:'人際互動',desc:'建立良好關係，解決衝突',emoji:'🤝',color:'#FFA726',
+   sel:'學習溝通、合作與解決人際問題的技巧',
+   activities:['rs1','rs2','rs3']},
+  {id:'dm',name:'負責任的決定',desc:'思考後果，做好選擇',emoji:'⚖️',color:'#66BB6A',
+   sel:'考慮後果與他人感受，做出對大家都好的選擇',
+   activities:['dm1','dm2','dm3']},
+];
+
+const ACTS={
+  aw1:{name:'情緒大探索',desc:'認識16種情緒，了解它們的感覺',emoji:'😊',xp:15,level:1,domain:'aw',type:'emotion_wheel'},
+  aw2:{name:'身體感知地圖',desc:'情緒藏在身體的哪個地方？',emoji:'🧍',xp:20,level:2,domain:'aw',type:'body_map'},
+  aw3:{name:'我的優點星球',desc:'發現並肯定自己的特質與優點',emoji:'⭐',xp:25,level:2,domain:'aw',type:'strengths'},
+  mg1:{name:'呼吸冒險故事',desc:'跟著故事學習調節呼吸',emoji:'🫁',xp:15,level:1,domain:'mg',type:'breathing'},
+  mg2:{name:'情緒溫度計',desc:'察覺情緒強度，選擇應對策略',emoji:'🌡️',xp:20,level:2,domain:'mg',type:'thermometer'},
+  mg3:{name:'STOP暫停術',desc:'學習暫停、思考、行動的技巧',emoji:'✋',xp:25,level:2,domain:'mg',type:'stop_tech'},
+  sc1:{name:'換位思考',desc:'用不同人的眼睛看同一件事',emoji:'🔄',xp:20,level:2,domain:'sc',type:'perspective'},
+  sc2:{name:'情緒偵探',desc:'猜猜看他們現在有什麼感受？',emoji:'🔎',xp:20,level:2,domain:'sc',type:'empathy_detect'},
+  sc3:{name:'感恩練習',desc:'找到生活中值得感謝的事物',emoji:'🙏',xp:15,level:1,domain:'sc',type:'gratitude'},
+  rs1:{name:'說話方式訓練',desc:'學習三種溝通風格：積極/消極/自信',emoji:'💬',xp:20,level:2,domain:'rs',type:'comm_styles'},
+  rs2:{name:'好朋友特質分類',desc:'分辨哪些行為能促進或傷害友誼',emoji:'👫',xp:20,level:2,domain:'rs',type:'sort_game'},
+  rs3:{name:'和平使者',desc:'學習一步步解決朋友間的衝突',emoji:'🕊️',xp:30,level:3,domain:'rs',type:'peace_maker'},
+  dm1:{name:'決定大樹',desc:'跟著情境做出負責任的選擇',emoji:'🌳',xp:25,level:2,domain:'dm',type:'decision_tree'},
+  dm2:{name:'後果漣漪',desc:'看看你的決定如何影響周圍的人',emoji:'🌊',xp:25,level:2,domain:'dm',type:'consequence'},
+  dm3:{name:'問題解決術',desc:'用5個步驟解決困難的問題',emoji:'🧩',xp:30,level:3,domain:'dm',type:'problem_solve'},
+};
+
+const EMOTIONS=[
+  {e:'😊',n:'開心',c:'#FFE66D',body:'嘴角上揚、眼睛發亮、心跳加快',tip:'分享給別人，快樂會加倍！',strat:'大聲笑、跳舞、告訴朋友'},
+  {e:'😢',n:'難過',c:'#74B9FF',body:'胸口悶悶、眼淚出來、說話無力',tip:'哭出來沒關係，找人說說話',strat:'深呼吸、寫日記、找人陪'},
+  {e:'😠',n:'生氣',c:'#FF7675',body:'臉發紅、拳頭握緊、呼吸急促',tip:'先暫停！數到10再行動',strat:'深呼吸、離開現場、畫出來'},
+  {e:'😨',n:'害怕',c:'#A29BFE',body:'心跳加快、身體發抖、肚子不舒服',tip:'告訴大人，你不是一個人',strat:'找安全的人、說出來、做深呼吸'},
+  {e:'🤩',n:'興奮',c:'#FD79A8',body:'全身充滿能量、說話很快、想動來動去',tip:'好好享受這感覺，但別衝動',strat:'深呼吸冷靜、分享期待'},
+  {e:'😔',n:'失落',c:'#FDCB6E',body:'心空空的、提不起勁、肩膀下垂',tip:'做一件喜歡的事，慢慢就好',strat:'聽音樂、找朋友、做運動'},
+  {e:'😌',n:'平靜',c:'#55EFC4',body:'呼吸順暢、肌肉放鬆、頭腦清晰',tip:'好好珍惜這感覺！',strat:'用呼吸練習保持平靜'},
+  {e:'😤',n:'挫折',c:'#E17055',body:'額頭緊、胃部緊繃、想放棄',tip:'暫停休息，換個方式再試',strat:'休息5分鐘、請人幫忙、分步驟'},
+  {e:'🤗',n:'溫暖',c:'#FFB347',body:'胸口暖暖的、想微笑、想靠近別人',tip:'這感覺很珍貴，記住它！',strat:'說謝謝、給個擁抱'},
+  {e:'😒',n:'無聊',c:'#B2BEC3',body:'打哈欠、動來動去、很難集中',tip:'嘗試新活動或找人一起玩',strat:'運動、創作、找新遊戲'},
+  {e:'🥰',n:'被愛',c:'#FF85A1',body:'心跳加快、臉會紅、想靠近對方',tip:'說出你的感謝，讓對方也知道',strat:'說謝謝、寫卡片、微笑'},
+  {e:'😳',n:'尷尬',c:'#FAB1A0',body:'臉紅、想躲起來、說話結巴',tip:'每個人都有過這感覺，沒關係的',strat:'深呼吸、笑一笑、繼續往前'},
+  {e:'🤔',n:'困惑',c:'#81ECEC',body:'眉頭皺起、搔頭、不確定該怎麼做',tip:'不懂就問，這是聰明的表現',strat:'請教別人、分解問題'},
+  {e:'😴',n:'疲憊',c:'#B2BEC3',body:'眼皮重、打哈欠、反應變慢',tip:'休息一下，身體需要充電',strat:'小睡、喝水、做伸展'},
+  {e:'🥺',n:'委屈',c:'#DFE6E9',body:'嘴巴癟起、眼眶紅、說不出話',tip:'把感受說出來，讓別人了解你',strat:'深呼吸、告訴信任的人'},
+  {e:'😎',n:'自信',c:'#6C5CE7',body:'背脊挺直、眼神堅定、聲音清楚',tip:'繼續保持，你做得到！',strat:'記住成功經驗、正向自我對話'},
+];
+
+const BODY_ZONES=[
+  {e:'🧠',n:'頭部',emots:['困惑 😕','興奮 🤩','擔心 😟','思考 🤔'],info:'頭部容易感受到緊繃、頭痛（壓力、害怕），或是眼睛發亮（開心、興奮）。'},
+  {e:'❤️',n:'胸口',emots:['開心 😊','難過 😢','愛 🥰','害怕 😨'],info:'胸口是情緒最強烈的地方。開心時溫暖、難過時沉重、愛時跳動、害怕時收緊。'},
+  {e:'🫁',n:'肚子',emots:['緊張 😰','害怕 😨','興奮 🤩','挫折 😤'],info:'肚子對情緒很敏感。「蝴蝶在肚子裡飛」就是緊張或興奮的感覺！'},
+  {e:'💪',n:'手臂/手',emots:['生氣 😠','緊張 😰','自信 😎','想擁抱 🤗'],info:'生氣時拳頭握緊；緊張時手心出汗；開心時想要擁抱別人。'},
+  {e:'🦵',n:'腿/腳',emots:['害怕 😨','興奮 🤩','無聊 😒','躁動 😤'],info:'害怕時腿軟；興奮時踮腳；無聊時不停抖腳！'},
+  {e:'😶',n:'臉部',emots:['開心 😊','尷尬 😳','生氣 😠','難過 😢'],info:'臉部最直接表現情緒：微笑、皺眉、臉紅、眼淚——臉是情緒的窗戶。'},
+];
+
+const STRENGTHS=[
+  {e:'🎨',n:'創意',d:'你有很多新奇的想法'},
+  {e:'💪',n:'勇敢',d:'面對困難不退縮'},
+  {e:'❤️',n:'善良',d:'關心並幫助他人'},
+  {e:'📚',n:'好學',d:'喜歡學習新事物'},
+  {e:'😄',n:'幽默',d:'讓大家開心笑'},
+  {e:'🤝',n:'合作',d:'喜歡和他人一起'},
+  {e:'⚡',n:'積極',d:'做事充滿幹勁'},
+  {e:'🎯',n:'專注',d:'做事認真到底'},
+  {e:'🌱',n:'耐心',d:'等待不會慌'},
+  {e:'🌟',n:'自信',d:'相信自己做得到'},
+  {e:'💡',n:'聰明',d:'解決問題有辦法'},
+  {e:'🎵',n:'熱情',d:'對喜歡的事全力投入'},
+];
+
+const PERSPECTIVES=[
+  {
+    situation:'小明在班上分享他的畫，同學小華突然笑說「好醜喔！」',
+    chars:[
+      {e:'👦',n:'小明（畫者）',feeling:'感到受傷和難過，不想再畫畫了，覺得自己努力沒有意義。'},
+      {e:'👧',n:'小華（說話者）',feeling:'其實只是隨口說說，沒想到會傷到人，現在有點後悔。'},
+      {e:'🧑‍🏫',n:'老師',feeling:'看到小明的表情，很擔心他，想幫助兩個人和好。'},
+    ],
+    lesson:'同樣一句話，對不同人有不同的感受。說話前要想想對方的感受！'
+  },
+  {
+    situation:'下課時，小雨一個人坐在角落，沒有加入其他人玩耍。',
+    chars:[
+      {e:'🧒',n:'小雨（一個人的）',feeling:'有點孤單，希望有人來邀請，但不知道怎麼主動加入。'},
+      {e:'👦',n:'玩耍的同學',feeling:'大家玩得很開心，沒有注意到角落有人，並不是刻意排擠。'},
+      {e:'👩',n:'旁觀的同學',feeling:'有注意到小雨，想去邀請但有點害羞，不確定要怎麼做。'},
+    ],
+    lesson:'有時候別人的孤單不是因為我們壞，而是大家都沒有注意到。主動關心很重要！'
+  },
+  {
+    situation:'家裡只剩下最後一個蘋果，你和弟弟都想吃。',
+    chars:[
+      {e:'🧒',n:'你',feeling:'肚子很餓，今天運動了好久，真的很想吃這個蘋果。'},
+      {e:'👶',n:'弟弟',feeling:'剛才在外面玩，也很渴，看到蘋果很興奮。'},
+      {e:'👩',n:'媽媽',feeling:'希望兩個孩子能自己解決，不想要吵架，但也想看看怎麼處理。'},
+    ],
+    lesson:'每個人都有自己的需求和感受，溝通後也許能找到讓大家都開心的方法！'
+  },
+];
+
+const EMPATHY_SCENARIOS=[
+  {
+    story:'小芳花了兩個小時做完的拼圖，被弟弟一不小心全部打散了。',
+    q:'小芳現在最可能有什麼感受？',
+    choices:[
+      {t:'😠 生氣和挫折——花了這麼多時間卻白費了',correct:true},
+      {t:'😊 開心——可以再拼一次',correct:false},
+      {t:'😎 很酷——弟弟真有力氣',correct:false},
+      {t:'😴 無聊——反正拼圖不重要',correct:false},
+    ],
+    fb:'拼圖被打散會讓人感到生氣和挫折，這是完全正常的感受！如果你是小芳，你希望別人怎麼幫助你呢？',
+    xp:15,
+  },
+  {
+    story:'小文在台上表演，背詞背到一半忘記了，全班都沉默地看著他。',
+    q:'小文現在最可能感受到什麼？',
+    choices:[
+      {t:'😳 尷尬和害怕——不知道接下來要說什麼',correct:true},
+      {t:'😊 開心——大家都在看他',correct:false},
+      {t:'😤 生氣——都是老師的錯',correct:false},
+      {t:'😴 沒感覺——忘詞沒關係',correct:false},
+    ],
+    fb:'在人前忘詞是很尷尬也很害怕的感受。如果你是台下的同學，你會怎麼做來幫助他？',
+    xp:15,
+  },
+  {
+    story:'新轉來的同學阿志，坐在位子上，課間休息時其他人都去玩了，只有他一個人。',
+    q:'阿志最可能有什麼感受？',
+    choices:[
+      {t:'🥺 孤單和緊張——不知道怎麼加入別人',correct:true},
+      {t:'😊 開心——終於可以一個人安靜',correct:false},
+      {t:'😤 生氣——大家都不理他',correct:false},
+      {t:'😎 很厲害——他不需要朋友',correct:false},
+    ],
+    fb:'新環境裡，孤單和緊張是很正常的！主動去打招呼、邀請阿志一起玩，會讓他很感激你的！',
+    xp:15,
+  },
+];
+
+const COMM_SCENARIOS=[
+  {
+    situation:'朋友每天都拿你的橡皮擦用，但都不還你，你很困擾。',
+    styles:[
+      {style:'ag',tag:'攻擊型',text:'「你這個自私鬼！每次都拿我的東西，你去死！」',bad:true},
+      {style:'pa',tag:'消極型',text:'（什麼都不說，自己在心裡生悶氣，假裝沒事）',neutral:true},
+      {style:'as',tag:'自信型',text:'「我想跟你說，你每天用我的橡皮擦但沒有還我，我有點困擾，可以請你帶自己的嗎？」',good:true},
+    ],
+    lesson:'自信型溝通：直接說出你的感受和需求，不攻擊別人，也不壓抑自己！',
+  },
+  {
+    situation:'小組討論時，你有一個很好的想法，但擔心別人覺得不好。',
+    styles:[
+      {style:'pa',tag:'消極型',text:'（什麼都不說，把好點子藏在心裡）',neutral:true},
+      {style:'ag',tag:'攻擊型',text:'「你們的想法都很爛，只有我的最好，一定要聽我的！」',bad:true},
+      {style:'as',tag:'自信型',text:'「我有一個想法，不知道大家覺得怎麼樣？我們可以試試……」',good:true},
+    ],
+    lesson:'分享想法需要勇氣！自信地說出來，同時也尊重別人的意見，這才是團隊合作！',
+  },
+];
+
+const SORT_ITEMS={
+  good:[
+    {t:'👂 認真聽對方說話'},
+    {t:'🎂 記住朋友的生日'},
+    {t:'💪 幫助朋友度過困難'},
+    {t:'🤐 保守朋友的秘密'},
+    {t:'😊 朋友成功時真心恭喜'},
+    {t:'🙏 做錯了說對不起'},
+  ],
+  bad:[
+    {t:'😜 在別人面前說朋友壞話'},
+    {t:'🙅 朋友需要幫忙時假裝沒看到'},
+    {t:'👊 用力量威脅對方'},
+    {t:'🗣️ 把朋友的秘密告訴別人'},
+    {t:'😤 輸了就生氣、耍賴'},
+    {t:'😒 只在需要的時候才理朋友'},
+  ],
+};
+
+const DECISION_TREES=[
+  {
+    id:'wallet',
+    story:'你在上學路上發現地上有一個錢包，裡面有錢和身分證。沒有人看到你。',
+    q1:'你首先會怎麼做？',
+    c1:[
+      {t:'💰 把錢拿走，錢包丟掉',path:'bad',fb:'拿走別人的東西是不對的，失主可能很著急！'},
+      {t:'🏫 帶去學校交給老師',path:'good',fb:'很好！老師可以幫你找到失主，這是負責任的做法！'},
+      {t:'📞 試著打電話給錢包裡的聯絡人',path:'good',fb:'很聰明！主動聯絡是很棒的做法！'},
+      {t:'🚶 假裝沒看到，繼續走',path:'neutral',fb:'失主可能很著急，其實你能幫助他們！'},
+    ],
+    outcomes:{
+      bad:{c:'bad',t:'💔 失主遺失了重要的東西，很傷心。而且你可能會感到良心不安。'},
+      good:{c:'good',t:'✅ 失主找回了錢包，非常感謝你！你做了正確且勇敢的事！'},
+      neutral:{c:'warn',t:'⚠️ 錢包可能被其他人拿走，失主就找不回來了。'},
+    }
+  },
+  {
+    id:'cheat',
+    story:'考試時，旁邊的同學悄悄把答案紙移過來給你看，說「沒關係，老師不會發現的」。',
+    q1:'你會怎麼做？',
+    c1:[
+      {t:'📋 偷看答案，反正沒人發現',path:'bad',fb:'抄答案是作弊，就算沒被發現，你也沒有真正學到東西。'},
+      {t:'🚫 拒絕說「不行，這樣是作弊」',path:'good',fb:'很勇敢！拒絕作弊需要很大的勇氣，你做了正確的選擇！'},
+      {t:'😶 假裝沒聽到，繼續寫自己的',path:'neutral',fb:'還不錯，你沒有作弊。但也可以勇敢說出「這樣不對」！'},
+      {t:'🤫 看了一點點，應該沒關係',path:'bad',fb:'就算只看一點點，這也是不誠實的行為。誠實最重要！'},
+    ],
+    outcomes:{
+      bad:{c:'bad',t:'💔 作弊讓你沒有真正學習，而且被發現的話後果更嚴重！'},
+      good:{c:'good',t:'✅ 你誠實地完成考試，就算分數不高，你也保持了誠信，值得驕傲！'},
+      neutral:{c:'warn',t:'⚠️ 你沒作弊，但也許下次可以更勇敢地說出「這樣不對」！'},
+    }
+  },
+];
+
+const CONSEQUENCES=[
+  {
+    action:'在學校說謊騙老師',
+    ripples:[
+      {who:'🧑‍🏫 老師',effect:'對你失去信任，以後很難相信你說的話',color:'#FF6B6B'},
+      {who:'👨‍👩‍👦 爸媽',effect:'得知後感到失望和擔心',color:'#FFA726'},
+      {who:'👫 朋友',effect:'覺得你不誠實，可能不想靠近你',color:'#A29BFE'},
+      {who:'🪞 自己',effect:'良心不安，壓力很大，以後要不停說更多謊',color:'#FF6B9D'},
+    ]
+  },
+  {
+    action:'主動幫助被欺負的同學',
+    ripples:[
+      {who:'🧒 被幫助的人',effect:'感到被保護，不再那麼孤單害怕',color:'#51CF66'},
+      {who:'👩 老師',effect:'看見你的勇敢，對你更加信任和尊重',color:'#4ECDC4'},
+      {who:'👫 其他同學',effect:'覺得你很勇敢，可能跟著你一起幫忙',color:'#66BB6A'},
+      {who:'🪞 自己',effect:'感到自豪，對自己更有信心',color:'#FFA726'},
+    ]
+  },
+];
+
+const BADGES=[
+  {e:'🌱',n:'情緒新手',d:'完成第一個活動',k:'first_act'},
+  {e:'🎭',n:'情緒探索家',d:'完成情緒大探索',k:'aw1'},
+  {e:'🧍',n:'身體探索家',d:'完成身體感知地圖',k:'aw2'},
+  {e:'🫁',n:'呼吸達人',d:'完成呼吸冒險',k:'mg1'},
+  {e:'🔄',n:'換位思考家',d:'完成換位思考',k:'sc1'},
+  {e:'🕊️',n:'和平使者',d:'完成和平使者',k:'rs3'},
+  {e:'🌳',n:'決定大師',d:'完成決定大樹',k:'dm1'},
+  {e:'🌟',n:'全能冒險家',d:'完成所有15個活動',k:'all_acts'},
+  {e:'💪',n:'自信達人',d:'累積100XP',k:'xp100'},
+  {e:'🏆',n:'SEL冠軍',d:'累積250XP',k:'xp250'},
+];
+
+// ═══════════════════════════════
+// STATE
+// ═══════════════════════════════
+const S=JSON.parse(localStorage.getItem('sel2_state')||'{}');
+if(!S.xp)     S.xp=0;
+if(!S.done)   S.done=[];
+if(!S.badges) S.badges=[];
+if(!S.emote)  S.emote=[];
+if(!S.grats)  S.grats=[];
+if(!S.strsel) S.strsel=[];
+if(!S.streak) S.streak=0;
+if(!S.avt)    S.avt='';
+function save(){localStorage.setItem('sel2_state',JSON.stringify(S))}
+
+// ═══════════════════════════════
+// UTILS
+// ═══════════════════════════════
+let _toast;
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(_toast);_toast=setTimeout(()=>t.classList.remove('show'),2800);
+}
+function confetti(){
+  const cols=['#FF6B9D','#4ECDC4','#FFE66D','#A29BFE','#51CF66','#FFA726'];
+  for(let i=0;i<24;i++){
+    const d=document.createElement('div');
+    d.className='confetti-piece';
+    d.style.left=Math.random()*100+'vw';
+    d.style.top='-10px';
+    d.style.background=cols[Math.floor(Math.random()*cols.length)];
+    d.style.animationDelay=Math.random()*.6+'s';
+    d.style.borderRadius=Math.random()>.5?'50%':'2px';
+    document.body.appendChild(d);
+    setTimeout(()=>d.remove(),1500);
+  }
+}
+function addXP(n,actId){
+  S.xp+=n;
+  if(actId&&!S.done.includes(actId)){S.done.push(actId)}
+  document.getElementById('xp-val').textContent=S.xp;
+  toast(`🎉 +${n} XP！`);
+  confetti();
+  checkBadges();
+  updateHome();
+  save();
+}
+const LV_TABLE=[
+  {lv:1,name:'新手冒險家',av:'🌱',min:0,max:50},
+  {lv:2,name:'情緒探索家',av:'🌿',min:50,max:120},
+  {lv:3,name:'情緒達人',av:'🌟',min:120,max:220},
+  {lv:4,name:'SEL高手',av:'🏆',min:220,max:350},
+  {lv:5,name:'情緒冠軍',av:'👑',min:350,max:350},
+];
+function getLv(){return LV_TABLE.find(l=>S.xp<l.max)||LV_TABLE[LV_TABLE.length-1];}
+
+const AV_OPTIONS=['🌱','🌟','🦁','🐬','🦊','🐧','🌈','🦋','🐸','🐼','🐻','🦄','🎈','🚀','🌸','🍀','⚡','🎵','🎨','🏆','👑','🌙','☀️','🔥'];
+function openAvPicker(){
+  const ol=document.createElement('div');ol.className='modal-overlay';
+  ol.innerHTML=`<div class="modal-box">
+    <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">✕</button>
+    <h3>選擇你的頭像</h3>
+    <p style="font-size:.8rem;color:#aaa;margin-top:3px;margin-bottom:10px">點擊頭像來更換</p>
+    <div class="av-picker">${AV_OPTIONS.map(a=>`<div class="avp${S.avt===a?' sel':''}" onclick="setAv('${a}',this)">${a}</div>`).join('')}</div>
+  </div>`;
+  document.body.appendChild(ol);
+  ol.addEventListener('click',e=>{if(e.target===ol)ol.remove();});
+}
+function setAv(a,el){
+  S.avt=a;save();
+  document.getElementById('av-emoji').textContent=a;
+  document.querySelectorAll('.avp').forEach(x=>x.classList.remove('sel'));
+  el.classList.add('sel');
+  setTimeout(()=>el.closest('.modal-overlay')?.remove(),400);
+}
+function getStreak(){
+  const today=new Date().toDateString();
+  if(!S.lastDay){S.lastDay=today;S.streak=0;save();return 0;}
+  const prev=new Date(S.lastDay),now=new Date(today);
+  const diff=Math.round((now-prev)/86400000);
+  if(diff===0)return S.streak||0;
+  if(diff===1){S.streak=(S.streak||0)+1;}else{S.streak=1;}
+  S.lastDay=today;save();return S.streak;
+}
+function checkBadges(){
+  const earn=k=>{if(!S.badges.includes(k)){S.badges.push(k);toast('🏅 獲得獎章：'+BADGES.find(b=>b.k===k)?.n+'！');confetti();renderAchieve();}};
+  if(S.done.length>=1)earn('first_act');
+  if(S.done.includes('aw1'))earn('aw1');
+  if(S.done.includes('aw2'))earn('aw2');
+  if(S.done.includes('mg1'))earn('mg1');
+  if(S.done.includes('sc1'))earn('sc1');
+  if(S.done.includes('rs3'))earn('rs3');
+  if(S.done.includes('dm1'))earn('dm1');
+  if(S.done.length>=15)earn('all_acts');
+  if(S.xp>=100)earn('xp100');
+  if(S.xp>=250)earn('xp250');
+}
+
+// ═══════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════
+let _history=[];
+function showScreen(id,push=true){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s-'+id)?.classList.add('active');
+  const back=document.getElementById('hdr-back');
+  if(push&&id!=='home')_history.push(id);
+  back.className=_history.length>0?'show':'';
+  // update bnav
+  document.querySelectorAll('.bn').forEach(b=>b.classList.remove('active'));
+  document.querySelector(`.bn[data-s="${id}"]`)?.classList.add('active');
+}
+function goBack(){
+  _history.pop();
+  const prev=_history[_history.length-1]||'home';
+  _history=_history.slice(0,-1);
+  if(prev.startsWith('domain-')){
+    const idx=parseInt(prev.split('-')[1]);
+    openDomain(idx,false);
+  }else showScreen(prev,false);
+}
+document.querySelectorAll('.bn').forEach(b=>{
+  b.addEventListener('click',()=>{
+    const s=b.dataset.s;
+    if(s.startsWith('domain-')){
+      _history=[];
+      openDomain(parseInt(s.split('-')[1]),true);
+    }else{
+      _history=[];
+      if(s==='achieve')renderAchieve();
+      showScreen(s,true);
+    }
+  });
+});
+
+// ═══════════════════════════════
+// HOME
+// ═══════════════════════════════
+function updateHome(){
+  const lv=getLv();
+  const cur=lv.lv===5?S.xp:S.xp;
+  const nextLv=LV_TABLE[lv.lv]||lv;
+  const pct=lv.lv===5?100:Math.min(100,Math.round((S.xp-lv.min)/(nextLv.min-lv.min)*100));
+  // avatar: prefer custom, else level default
+  document.getElementById('av-emoji').textContent=S.avt||lv.av;
+  document.getElementById('av-name').textContent=`${lv.name}`;
+  document.getElementById('lv-badge').textContent=`Lv.${lv.lv} ${lv.name}`;
+  document.getElementById('xp-val').textContent=S.xp;
+  // hero stats
+  document.getElementById('h-xp').textContent=S.xp;
+  document.getElementById('h-done').textContent=S.done.length+'/15';
+  document.getElementById('h-bdg').textContent=S.badges.length;
+  document.getElementById('h-streak').textContent=getStreak();
+  // xp bar
+  document.getElementById('xp-fill').style.width=pct+'%';
+  document.getElementById('xp-cur-lbl').textContent=S.xp+' XP';
+  document.getElementById('xp-next-lbl').textContent=lv.lv===5?'已達最高等級 👑':`下一級：${nextLv.min} XP`;
+  renderDomainGrid();
+}
+function renderDomainGrid(){
+  const g=document.getElementById('domain-grid');
+  g.innerHTML='';
+  DOMAINS.forEach((d,i)=>{
+    const done=d.activities.filter(a=>S.done.includes(a)).length;
+    const pct=Math.round(done/d.activities.length*100);
+    const div=document.createElement('div');
+    div.className='dc';
+    div.style.setProperty('--dc',d.color);
+    div.innerHTML=`<div class="de">${d.emoji}</div><div class="dn">${d.name}</div><div class="dd">${d.desc}</div>
+      <div class="dpb"><div class="dpf" style="width:${pct}%;background:${d.color}"></div></div>`;
+    div.onclick=()=>openDomain(i);
+    g.appendChild(div);
+  });
+}
+
+// ═══════════════════════════════
+// DOMAIN PAGE
+// ═══════════════════════════════
+let _curDomain=0;
+function openDomain(idx,push=true){
+  _curDomain=idx;
+  const d=DOMAINS[idx];
+  const dh=document.getElementById('dh');
+  dh.style.background=`linear-gradient(135deg,${d.color},${d.color}CC)`;
+  dh.innerHTML=`<div class="dhe">${d.emoji}</div><div><h2>${d.name}</h2><p>${d.sel}</p></div>`;
+  const al=document.getElementById('act-list');
+  al.innerHTML='';
+  d.activities.forEach((aid,ai)=>{
+    const a=ACTS[aid];
+    const done=S.done.includes(aid);
+    const div=document.createElement('div');
+    div.className='ac';
+    const lvt=['lv1','lv2','lv3'][a.level-1];
+    const lvn=['⭐ 初級','🌟 中級','💎 進階'][a.level-1];
+    div.innerHTML=`
+      <div class="ai">${a.emoji}</div>
+      <div class="ainfo">
+        <div class="an">${a.name}</div>
+        <div class="ad">${a.desc}</div>
+        <span class="lv-tag ${lvt}">${lvn}</span>
+        <div class="axp">+${a.xp} XP</div>
+      </div>
+      <div class="adone">${done?'✅':''}</div>`;
+    div.onclick=()=>openActivity(aid);
+    al.appendChild(div);
+  });
+  if(push)_history.push('domain-'+idx);
+  showScreen('domain',false);
+  document.getElementById('hdr-back').className='show';
+}
+
+// ═══════════════════════════════
+// ACTIVITY ROUTER
+// ═══════════════════════════════
+let _curAct='';
+function openActivity(aid){
+  _curAct=aid;
+  const a=ACTS[aid];
+  const d=DOMAINS.find(x=>x.id===a.domain);
+  const ah=document.getElementById('ah-card');
+  ah.innerHTML=`<div class="ahi">${a.emoji}</div><div><div class="ahn">${a.name}</div><div class="ahd">${d.emoji} ${d.name} · +${a.xp} XP</div></div>`;
+  document.getElementById('act-content').innerHTML='';
+  const renderers={
+    emotion_wheel:renderEmotionWheel,body_map:renderBodyMap,strengths:renderStrengths,
+    breathing:renderBreathing,thermometer:renderThermometer,stop_tech:renderSTOP,
+    perspective:renderPerspective,empathy_detect:renderEmpathy,gratitude:renderGratitude,
+    comm_styles:renderComm,sort_game:renderSort,peace_maker:renderPeace,
+    decision_tree:renderDecision,consequence:renderConsequence,problem_solve:renderProblemSolve,
+  };
+  _history.push('activity');
+  showScreen('activity',false);
+  document.getElementById('hdr-back').className='show';
+  const fn=renderers[a.type];
+  if(fn)fn(document.getElementById('act-content'),aid);
+}
+
+// ═══════════════════════════════
+// ACTIVITY: EMOTION WHEEL
+// ═══════════════════════════════
+function renderEmotionWheel(c,aid){
+  const a=ACTS[aid];
+  let sel=-1,rated=false;
+  c.innerHTML=`<div class="card"><p style="font-size:.88rem;color:#666;line-height:1.65">點擊情緒臉孔，了解它的感受、身體反應和應對方式。再為「你有多常出現這種感受」評分！</p></div>
+    <div class="ew-grid" id="ew-grid"></div>
+    <div id="edt-box"></div>`;
+  const g=document.getElementById('ew-grid');
+  EMOTIONS.forEach((em,i)=>{
+    const d=document.createElement('div');
+    d.className='ew';
+    d.style.background=em.c+'33';
+    d.innerHTML=`<div class="ee">${em.e}</div><div class="en">${em.n}</div>`;
+    d.onclick=()=>{
+      document.querySelectorAll('.ew').forEach(x=>x.classList.remove('sel'));
+      d.classList.add('sel');
+      sel=i;
+      if(!S.emote.includes(i)){S.emote.push(i);save();}
+      showEdt(em);
+    };
+    g.appendChild(d);
+  });
+  function showEdt(em){
+    const box=document.getElementById('edt-box');
+    box.innerHTML=`<div class="edt">
+      <h3>${em.e} ${em.n}</h3>
+      <div class="edt-sec"><div class="edt-lbl">身體感受</div><div class="edt-txt">🫀 ${em.body}</div></div>
+      <div class="edt-sec"><div class="edt-lbl">小撇步</div><div class="edt-txt">💡 ${em.tip}</div></div>
+      <div class="edt-sec"><div class="edt-lbl">應對方法</div><div class="edt-txt">🛠️ ${em.strat}</div></div>
+      <div class="edt-sec"><div class="edt-lbl">你多常有這種感覺？</div>
+        <div class="e-rate"><span style="font-size:.78rem;color:#888">很少</span>
+          <div>${[1,2,3,4,5].map(n=>`<span class="er-s" data-n="${n}">⭐</span>`).join('')}</div>
+          <span style="font-size:.78rem;color:#888">很常</span>
+        </div>
+      </div>
+      ${S.emote.length>=8&&!S.done.includes(aid)?`<div class="btn-row"><button class="btn" id="ew-done-btn" style="--acc:${a.color||'#FF6B9D'}">已探索 ${S.emote.length} 種情緒！完成活動 🎉</button></div>`:''}
+    </div>`;
+    box.querySelectorAll('.er-s').forEach(star=>{
+      star.onclick=()=>{
+        const n=parseInt(star.dataset.n);
+        box.querySelectorAll('.er-s').forEach((s,i)=>s.classList.toggle('lit',i<n));
+      };
+    });
+    document.getElementById('ew-done-btn')?.addEventListener('click',()=>addXP(a.xp,aid));
+  }
+  if(S.emote.length>0)document.querySelectorAll('.ew').forEach((d,i)=>{if(S.emote.includes(i))d.style.opacity='.7'});
+}
+
+// ═══════════════════════════════
+// ACTIVITY: BODY MAP
+// ═══════════════════════════════
+function renderBodyMap(c,aid){
+  const a=ACTS[aid];
+  c.innerHTML=`<div class="card"><p style="font-size:.88rem;color:#666;line-height:1.65">點擊身體的不同部位，看看情緒藏在哪裡！了解自己的身體感受，是情緒覺察的第一步。</p></div>
+    <div class="card"><div class="bm-wrap">
+      <div class="bm-fig" id="bm-fig"></div>
+      <div class="bm-info"><h4 id="bm-title">👆 點一個身體部位</h4><div id="bm-chips"></div><div id="bm-desc" style="margin-top:10px;font-size:.84rem;color:#555;line-height:1.65"></div></div>
+    </div></div>
+    <div class="btn-row"><button class="btn" style="--acc:#FF6B9D" onclick="addXP(${a.xp},'${aid}')">✅ 我了解情緒住在身體裡！</button></div>`;
+  const fig=document.getElementById('bm-fig');
+  BODY_ZONES.forEach((z,i)=>{
+    const d=document.createElement('div');
+    d.className='bz';
+    d.innerHTML=`<div class="bze">${z.e}</div><div class="bzn">${z.n}</div>`;
+    d.onclick=()=>{
+      document.querySelectorAll('.bz').forEach(x=>x.classList.remove('act'));
+      d.classList.add('act');
+      document.getElementById('bm-title').textContent=`${z.e} ${z.n}的情緒`;
+      document.getElementById('bm-chips').innerHTML=z.emots.map(e=>`<span class="e-chip">${e}</span>`).join('');
+      document.getElementById('bm-desc').textContent=z.info;
+    };
+    fig.appendChild(d);
+  });
+}
+
+// ═══════════════════════════════
+// ACTIVITY: STRENGTHS
+// ═══════════════════════════════
+function renderStrengths(c,aid){
+  const a=ACTS[aid];
+  if(S.strsel.length>0){}
+  c.innerHTML=`<div class="card"><p style="font-size:.88rem;color:#666;line-height:1.65">選出 <strong>3個最符合你的優點</strong>！每個人都有獨特的優點，認識它們能讓你更有自信。</p></div>
+    <div class="str-grid" id="str-grid"></div>
+    <div class="str-info" id="str-info"></div>
+    <div id="str-selected" style="margin-top:12px;display:flex;flex-wrap:wrap;gap:8px"></div>
+    <div class="btn-row" id="str-btn-row"></div>`;
+  const sg=document.getElementById('str-grid');
+  STRENGTHS.forEach((s,i)=>{
+    const d=document.createElement('div');
+    d.className='str'+(S.strsel.includes(i)?' sel':'');
+    d.innerHTML=`<div class="se">${s.e}</div><div class="sn">${s.n}</div>`;
+    d.onclick=()=>toggleStr(i,d,s);
+    sg.appendChild(d);
+  });
+  updateStrBtn();
+  function toggleStr(i,d,s){
+    if(S.strsel.includes(i)){
+      S.strsel.splice(S.strsel.indexOf(i),1);
+      d.classList.remove('sel');
+    }else{
+      if(S.strsel.length>=3){toast('最多選3個優點喔！');return;}
+      S.strsel.push(i);d.classList.add('sel');
+      const info=document.getElementById('str-info');
+      info.className='str-info show';
+      info.innerHTML=`<div style="font-size:1.2rem">${s.e} <strong>${s.n}</strong></div><div style="font-size:.86rem;color:#666;margin-top:6px">${s.d}</div><div style="font-size:.82rem;color:#A29BFE;font-weight:700;margin-top:8px">💡 你可以用這個優點幫助身邊的人！</div>`;
+    }
+    save();updateStrBtn();
+  }
+  function updateStrBtn(){
+    const row=document.getElementById('str-btn-row');
+    const sel=document.getElementById('str-selected');
+    sel.innerHTML=S.strsel.map(i=>`<span style="background:#FFF0F6;border-radius:20px;padding:5px 13px;font-size:.83rem;font-weight:700">${STRENGTHS[i].e} ${STRENGTHS[i].n}</span>`).join('');
+    if(S.strsel.length>=3){
+      row.innerHTML=`<button class="btn" style="--acc:#FF6B9D" onclick="addXP(${a.xp},'${aid}')">✅ 這就是我的優點！</button>`;
+    }else{
+      row.innerHTML=`<span style="font-size:.84rem;color:#aaa">還可以選 ${3-S.strsel.length} 個優點</span>`;
+    }
+  }
+}
+
+// ═══════════════════════════════
+// ACTIVITY: BREATHING
+// ═══════════════════════════════
+function renderBreathing(c,aid){
+  const a=ACTS[aid];
+  let timer=null,phase=0,count=0,rounds=0;
+  const techs=[
+    {n:'4-7-8法',story:'想像你在大海邊，海浪聲幫助你放鬆…',i:4,h:7,ex:8,color:'#6C5CE7'},
+    {n:'方塊呼吸',story:'想像你在畫一個正方形，每邊都是平靜的…',i:4,h:4,ex:4,color:'#4ECDC4'},
+    {n:'深呼吸',story:'想像你是一棵大樹，呼吸帶來力量…',i:3,h:0,ex:6,color:'#51CF66'},
+  ];
+  let selT=0;
+  c.innerHTML=`<div style="display:flex;gap:8px;margin-bottom:14px" id="tech-tabs"></div>
+    <div class="br-scene">
+      <div class="br-story" id="br-story"></div>
+      <div class="br-orb" id="br-orb">準備</div>
+      <div class="br-phase" id="br-phase"></div>
+      <div class="br-info" id="br-info">已完成 <span id="br-rounds">0</span> 輪（目標 3 輪）</div>
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="br-start" style="--acc:#A29BFE">開始練習</button>
+      <button class="btn2" id="br-stop" style="display:none">停止</button>
+    </div>
+    <div id="br-done-row" style="margin-top:12px"></div>`;
+  const tabs=document.getElementById('tech-tabs');
+  techs.forEach((t,i)=>{
+    const b=document.createElement('button');
+    b.className='btn2';b.style.fontSize='.8rem';b.textContent=t.n;
+    b.onclick=()=>{selT=i;tabs.querySelectorAll('button').forEach((x,j)=>x.style.background=j===i?'#A29BFE':'#F0F0F0');b.style.color=i===0?'#fff':'#555';document.getElementById('br-story').textContent=t.story;stop_breath();};
+    tabs.appendChild(b);
+  });
+  document.getElementById('br-story').textContent=techs[0].story;
+  const orb=document.getElementById('br-orb');
+  const ph=document.getElementById('br-phase');
+  function stop_breath(){
+    clearTimeout(timer);timer=null;
+    document.getElementById('br-start').style.display='';
+    document.getElementById('br-stop').style.display='none';
+    orb.textContent='準備';orb.style.transform='scale(1)';ph.textContent='';
+  }
+  function tick_breath(){
+    const t=techs[selT];
+    const phases=[];
+    for(let i=t.i;i>=1;i--)phases.push({l:`吸氣 ${i}`,sc:1+.5*(t.i-i)/t.i});
+    if(t.h>0)for(let i=t.h;i>=1;i--)phases.push({l:`憋氣 ${i}`,sc:1.5});
+    for(let i=t.ex;i>=1;i--)phases.push({l:`呼氣 ${i}`,sc:1.5-.5*(t.ex-i)/t.ex});
+    let p=0;
+    function tick(){
+      if(p>=phases.length){
+        rounds++;document.getElementById('br-rounds').textContent=rounds;
+        if(rounds>=3){
+          document.getElementById('br-done-row').innerHTML=`<button class="btn" style="--acc:#A29BFE" onclick="addXP(${a.xp},'${aid}');stop_breath()">🎉 完成3輪！領取獎勵</button>`;
+        }
+        p=0;timer=setTimeout(tick,800);return;
+      }
+      const pp=phases[p];
+      ph.textContent=pp.l;
+      orb.style.transition='transform .95s ease';
+      orb.style.transform=`scale(${pp.sc})`;
+      p++;timer=setTimeout(tick,1000);
+    }
+    tick();
+  }
+  document.getElementById('br-start').onclick=()=>{
+    document.getElementById('br-start').style.display='none';
+    document.getElementById('br-stop').style.display='';
+    tick_breath();
+  };
+  document.getElementById('br-stop').onclick=stop_breath;
+  // expose stop_breath globally for button
+  window.stop_breath=stop_breath;
+}
+
+// ═══════════════════════════════
+// ACTIVITY: THERMOMETER
+// ═══════════════════════════════
+function renderThermometer(c,aid){
+  const a=ACTS[aid];
+  const levels=[
+    {min:0,max:2,e:'😌',l:'非常平靜',color:'#55EFC4'},
+    {min:3,max:4,e:'😊',l:'有點不舒服',color:'#FDCB6E'},
+    {min:5,max:6,e:'😟',l:'中等強度',color:'#FFA726'},
+    {min:7,max:8,e:'😤',l:'很強烈',color:'#FF7675'},
+    {min:9,max:10,e:'🤯',l:'超強烈！需要立刻處理',color:'#D63031'},
+  ];
+  const cops=[
+    {e:'🫁',n:'深呼吸'},
+    {e:'🚶',n:'走一走'},
+    {e:'💧',n:'喝水'},
+    {e:'🎵',n:'聽音樂'},
+    {e:'✍️',n:'寫下來'},
+    {e:'🗣️',n:'說出來'},
+    {e:'🤗',n:'找人陪'},
+    {e:'🎨',n:'畫一畫'},
+  ];
+  c.innerHTML=`<div class="card"><p style="font-size:.88rem;color:#666;line-height:1.65">拖動滑桿，標示你現在（或某個情境下）的情緒強度，再選擇適合的應對策略！</p></div>
+    <div class="card"><div class="thw">
+      <div class="th-emoji" id="th-e">😌</div>
+      <div class="th-label" id="th-l">非常平靜 (0)</div>
+      <input type="range" min="0" max="10" value="0" id="th-slider" style="background:linear-gradient(90deg,#55EFC4,#D63031)">
+    </div></div>
+    <div class="card"><div class="sec-title" style="font-size:.88rem;margin-bottom:10px">選擇 2 個應對策略：</div>
+      <div class="cop-grid" id="cop-grid"></div>
+      <div id="th-fb" style="margin-top:10px;font-size:.85rem;color:#666"></div>
+    </div>
+    <div class="btn-row" id="th-btn"></div>`;
+  const sl=document.getElementById('th-slider');
+  let copSel=[];
+  sl.oninput=()=>{
+    const v=parseInt(sl.value);
+    const lv=levels.find(l=>v>=l.min&&v<=l.max);
+    document.getElementById('th-e').textContent=lv.e;
+    document.getElementById('th-l').textContent=`${lv.l} (${v})`;
+  };
+  const cg=document.getElementById('cop-grid');
+  cops.forEach((cp,i)=>{
+    const d=document.createElement('div');d.className='cop';
+    d.innerHTML=`<div class="ce">${cp.e}</div><div class="cn">${cp.n}</div>`;
+    d.onclick=()=>{
+      if(copSel.includes(i)){copSel.splice(copSel.indexOf(i),1);d.style.borderColor='#E0E0E0';d.style.background='#fff';}
+      else{
+        if(copSel.length>=2){toast('最多選2個策略！');return;}
+        copSel.push(i);d.style.borderColor='#A29BFE';d.style.background='#F5F0FF';
+      }
+      document.getElementById('th-fb').textContent=copSel.length>0?`✅ 已選擇：${copSel.map(x=>cops[x].n).join('、')}. 這些都是很棒的策略！`:'';
+      if(copSel.length===2)document.getElementById('th-btn').innerHTML=`<button class="btn" style="--acc:#A29BFE" onclick="addXP(${a.xp},'${aid}')">✅ 我學會調節情緒了！</button>`;
+    };
+    cg.appendChild(d);
+  });
+}
+
+// ═══════════════════════════════
+// ACTIVITY: STOP TECHNIQUE
+// ═══════════════════════════════
+function renderSTOP(c,aid){
+  const a=ACTS[aid];
+  const steps=[
+    {e:'✋',col:'#FF6B9D',title:'S - STOP 暫停',desc:'當你感到情緒激動時，先停下來！不要馬上說話或行動，給自己幾秒鐘。'},
+    {e:'🤔',col:'#FFA726',title:'T - THINK 思考',desc:'問自己：「我現在感受到什麼？是什麼讓我有這個感受？我有哪些選擇？」'},
+    {e:'🎯',col:'#51CF66',title:'O - OPTIONS 評估選項',desc:'想想各種可能的做法，並想一想每個做法會有什麼結果。'},
+    {e:'🚀',col:'#A29BFE',title:'P - PROCEED 行動',desc:'選擇最好的方法，然後勇敢去做。做完後想想看，有沒有更好的方式？'},
+  ];
+  const practice={
+    story:'下課時，你不小心撞到同學，對方很生氣地說「你幹嘛！」你感到很委屈，因為是不小心的。',
+    qs:[
+      {q:'✋ STOP — 你首先應該做什麼？',choices:['深呼吸，先不要馬上反應','馬上反嗆回去','跑走不理他'],ans:0,fb:'對！先暫停一下，讓情緒冷靜是最重要的第一步。'},
+      {q:'🤔 THINK — 你想到什麼？',choices:['我是不小心的，但他可能覺得受傷了','他是壞人，故意挑釁我','算了，不用管了'],ans:0,fb:'很棒！能夠理解對方的感受，是換位思考的能力！'},
+      {q:'🚀 PROCEED — 最好的行動是？',choices:['說「對不起，我不是故意的」','不理他，假裝沒事','反嗆「那又怎樣！」'],ans:0,fb:'誠實道歉是最好的選擇！這樣可以化解誤會，讓大家都好受。'},
+    ]
+  };
+  let qIdx=0,allDone=false;
+  c.innerHTML=`<div class="stop-steps">${steps.map(s=>`
+    <div class="stop-step" style="background:${s.col}18;border-left:4px solid ${s.col}">
+      <div class="ss-icon">${s.e}</div>
+      <div><div class="ss-title">${s.title}</div><div class="ss-desc">${s.desc}</div></div>
+    </div>`).join('')}</div>
+    <div class="card">
+      <div style="font-size:.95rem;font-weight:800;margin-bottom:10px">🎯 情境練習</div>
+      <div style="background:#F0F4FF;border-radius:12px;padding:12px;font-size:.88rem;color:#444;line-height:1.65;margin-bottom:14px">${practice.story}</div>
+      <div id="sq-box"></div>
+    </div>`;
+  function renderQ(){
+    const q=practice.qs[qIdx];
+    const box=document.getElementById('sq-box');
+    box.innerHTML=`<p style="font-size:.9rem;font-weight:700;margin-bottom:10px">${q.q}</p>
+      ${q.choices.map((ch,i)=>`<button class="cb" onclick="pickSTOP(this,${i},${q.ans},'${q.fb}')">${ch}</button>`).join('')}
+      <div class="fb" id="sq-fb"></div>`;
+  }
+  window.pickSTOP=function(btn,i,ans,fb){
+    document.querySelectorAll('#sq-box .cb').forEach(b=>b.disabled=true);
+    btn.classList.add(i===ans?'correct':'wrong');
+    const fbEl=document.getElementById('sq-fb');
+    fbEl.textContent=(i===ans?'✅ ':'❌ ')+fb;
+    fbEl.classList.add('show');
+    setTimeout(()=>{
+      qIdx++;
+      if(qIdx>=practice.qs.length){
+        document.getElementById('sq-box').innerHTML=`<div style="text-align:center;padding:10px"><div style="font-size:2rem">🎉</div><div style="font-weight:800;margin:8px 0">你已經學會STOP技巧了！</div>
+        <button class="btn" style="--acc:#A29BFE;margin-top:8px" onclick="addXP(${a.xp},'${aid}')">領取獎勵！</button></div>`;
+      }else renderQ();
+    },1600);
+  };
+  renderQ();
+}
+
+// ═══════════════════════════════
+// ACTIVITY: PERSPECTIVE
+// ═══════════════════════════════
+function renderPerspective(c,aid){
+  const a=ACTS[aid];
+  let scIdx=0,charIdx=0;
+  function render(){
+    const sc=PERSPECTIVES[scIdx];
+    c.innerHTML=`<div class="card"><p style="font-size:.88rem;color:#666;line-height:1.65">同一件事，從不同人的角度看，感受完全不同！試著理解每個人的立場。</p></div>
+      <div class="card"><div style="background:#F0F4FF;border-radius:12px;padding:13px;font-size:.9rem;color:#333;line-height:1.7;margin-bottom:14px">🎬 <strong>情境：</strong>${sc.situation}</div>
+        <div style="font-size:.85rem;font-weight:700;color:#888;margin-bottom:10px">點擊角色，看看他/她的感受：</div>
+        <div class="pc-row">${sc.chars.map((ch,i)=>`<div class="pc${i===charIdx?' act':''}" onclick="selChar(${i})"><div class="pce">${ch.e}</div><div class="pcn">${ch.n}</div></div>`).join('')}</div>
+        <div class="pb" id="pb">${sc.chars[charIdx].feeling}</div>
+        <div style="margin-top:14px;background:#E8F8F5;border-radius:12px;padding:12px;font-size:.84rem;color:#00B894;font-weight:600;line-height:1.6">💡 ${sc.lesson}</div>
+      </div>
+      <div class="btn-row">
+        ${scIdx<PERSPECTIVES.length-1?`<button class="btn2" onclick="nextPersp()">下一個情境 →</button>`:''}
+        <button class="btn" style="--acc:#4ECDC4" onclick="addXP(${a.xp},'${aid}')">✅ 我學會換位思考了！</button>
+      </div>`;
+  }
+  window.selChar=function(i){charIdx=i;render()};
+  window.nextPersp=function(){scIdx=(scIdx+1)%PERSPECTIVES.length;charIdx=0;render()};
+  render();
+}
+
+// ═══════════════════════════════
+// ACTIVITY: EMPATHY DETECT
+// ═══════════════════════════════
+function renderEmpathy(c,aid){
+  const a=ACTS[aid];
+  let idx=0,score=0;
+  function render(){
+    if(idx>=EMPATHY_SCENARIOS.length){
+      c.innerHTML=`<div class="card" style="text-align:center;padding:30px">
+        <div style="font-size:3rem">🔎</div>
+        <h3 style="margin:14px 0">情緒偵探任務完成！</h3>
+        <p style="color:#888;font-size:.9rem">答對 ${score}/${EMPATHY_SCENARIOS.length} 題</p>
+        <p style="color:#555;font-size:.85rem;margin-top:10px;line-height:1.65">理解他人的感受，讓我們能給予更好的支持和幫助！</p>
+        <div class="btn-row" style="justify-content:center;margin-top:16px">
+          <button class="btn" style="--acc:#4ECDC4" onclick="addXP(${a.xp},'${aid}')">🎉 領取獎勵！</button>
+        </div></div>`;
+      return;
+    }
+    const sc=EMPATHY_SCENARIOS[idx];
+    c.innerHTML=`<div class="card" style="font-size:.8rem;color:#aaa;margin-bottom:6px">第 ${idx+1}/${EMPATHY_SCENARIOS.length} 題 · 🔎 情緒偵探</div>
+      <div class="ed-scenario"><p>${sc.story}</p><div class="ed-q">${sc.q}</div>
+        ${sc.choices.map((ch,i)=>`<button class="cb" onclick="pickEmp(this,${ch.correct},'${sc.fb}')">${ch.t}</button>`).join('')}
+        <div class="fb" id="emp-fb"></div>
+      </div>`;
+  }
+  window.pickEmp=function(btn,correct,fb){
+    document.querySelectorAll('.ed-scenario .cb').forEach(b=>b.disabled=true);
+    btn.classList.add(correct?'correct':'wrong');
+    if(correct)score++;
+    const f=document.getElementById('emp-fb');
+    f.textContent=(correct?'✅ 答對了！':'💭 試試看！')+fb;
+    f.classList.add('show');
+    setTimeout(()=>{idx++;render();},1800);
+  };
+  render();
+}
+
+// ═══════════════════════════════
+// ACTIVITY: GRATITUDE
+// ═══════════════════════════════
+function renderGratitude(c,aid){
+  const a=ACTS[aid];
+  c.innerHTML=`<div class="card"><p style="font-size:.88rem;color:#666;line-height:1.65">每天找3件值得感謝的事，能讓心情更好！感謝可以是人、事、物，大事小事都算！</p></div>
+    <div class="card">
+      <div style="font-size:.9rem;font-weight:700;margin-bottom:12px">今天我感謝…</div>
+      ${[1,2,3].map(n=>`<div class="gr-item"><div class="gr-num">${['🌟','🌈','💛'][n-1]}</div>
+        <input class="gr-field" id="gr${n}" placeholder="第${n}件：例如：今天有朋友陪我吃午餐"></div>`).join('')}
+      <div class="btn-row"><button class="btn" style="--acc:#4ECDC4" onclick="saveGratitude('${aid}')">💾 儲存今天的感謝</button></div>
+    </div>
+    <div id="gr-history"></div>`;
+  renderGrHistory();
+}
+function saveGratitude(aid){
+  const items=[1,2,3].map(n=>document.getElementById('gr'+n)?.value.trim()).filter(Boolean);
+  if(items.length<3){toast('請填寫3件感謝的事！');return;}
+  const now=new Date();
+  S.grats.unshift({date:`${now.getMonth()+1}/${now.getDate()}`,items});
+  save();
+  addXP(ACTS[aid].xp,aid);
+  [1,2,3].forEach(n=>{const f=document.getElementById('gr'+n);if(f)f.value='';});
+  renderGrHistory();
+}
+function renderGrHistory(){
+  const box=document.getElementById('gr-history');
+  if(!box)return;
+  box.innerHTML=S.grats.length?'<div class="sec-title" style="margin-top:4px">過去的感謝 🌸</div>':'';
+  S.grats.slice(0,5).forEach(g=>{
+    box.innerHTML+=`<div class="gr-entry"><div class="ge-date">${g.date}</div>${g.items.map((it,i)=>`<div>${['🌟','🌈','💛'][i]} ${it}</div>`).join('')}</div>`;
+  });
+}
+
+// ═══════════════════════════════
+// ACTIVITY: COMM STYLES
+// ═══════════════════════════════
+function renderComm(c,aid){
+  const a=ACTS[aid];
+  let scIdx=0;
+  function render(){
+    const sc=COMM_SCENARIOS[scIdx];
+    c.innerHTML=`<div class="card"><p style="font-size:.88rem;color:#666;line-height:1.65">溝通有三種方式：<b>攻擊型</b>（傷害別人）、<b>消極型</b>（壓抑自己）、<b>自信型</b>（表達自己又尊重別人）。</p></div>
+      <div class="card">
+        <div style="background:#F0F4FF;border-radius:12px;padding:13px;font-size:.9rem;color:#333;line-height:1.7;margin-bottom:14px">💬 <strong>情境：</strong>${sc.situation}</div>
+        ${sc.styles.map(s=>`<div class="cs-box ${s.style}"><span class="cs-tag">${s.tag}</span><span class="cs-txt">${s.text}</span></div>`).join('')}
+        <div style="margin-top:12px;background:#E8F8F5;border-radius:12px;padding:12px;font-size:.84rem;color:#00B894;font-weight:600;line-height:1.6">💡 ${sc.lesson}</div>
+      </div>
+      <div class="card">
+        <p style="font-size:.9rem;font-weight:700;margin-bottom:10px">✏️ 如果是你，你會怎麼說（自信型）？</p>
+        <textarea class="ps-field" id="comm-ans" placeholder="試著寫下你的自信型回應…" style="min-height:80px"></textarea>
+        <div class="btn-row">
+          ${scIdx<COMM_SCENARIOS.length-1?`<button class="btn2" onclick="nextComm()">下一個情境</button>`:''}
+          <button class="btn" style="--acc:#FFA726" onclick="if(document.getElementById('comm-ans').value.trim())addXP(${a.xp},'${aid}');else toast('請先寫下你的回應！')">✅ 完成練習！</button>
+        </div>
+      </div>`;
+  }
+  window.nextComm=function(){scIdx=(scIdx+1)%COMM_SCENARIOS.length;render()};
+  render();
+}
+
+// ═══════════════════════════════
+// ACTIVITY: SORT GAME
+// ═══════════════════════════════
+function renderSort(c,aid){
+  const a=ACTS[aid];
+  const all=[...SORT_ITEMS.good.map(x=>({...x,correct:'good'})),...SORT_ITEMS.bad.map(x=>({...x,correct:'bad'}))].sort(()=>Math.random()-.5);
+  let placed={},correct=0;
+  c.innerHTML=`<div class="card"><p style="font-size:.88rem;color:#666;line-height:1.65">點擊行為，再點擊「促進友誼」或「傷害友誼」來分類。看看你能答對幾個！</p></div>
+    <div id="sort-items"></div>
+    <div class="sort-wrap">
+      <div class="sort-bin good" id="bin-good"><h4>💚 促進友誼</h4><div id="bin-good-items"></div></div>
+      <div class="sort-bin bad" id="bin-bad"><h4>💔 傷害友誼</h4><div id="bin-bad-items"></div></div>
+    </div>
+    <div id="sort-score" style="font-size:.9rem;color:#888;margin-bottom:10px"></div>
+    <div id="sort-btn"></div>`;
+  let selIdx=null;
+  const si=document.getElementById('sort-items');
+  all.forEach((item,i)=>{
+    const d=document.createElement('div');d.className='si';d.id='si-'+i;
+    d.textContent=item.t;
+    d.onclick=()=>{
+      document.querySelectorAll('.si').forEach(x=>x.style.borderColor='transparent');
+      if(selIdx===i){selIdx=null;return;}
+      selIdx=i;d.style.borderColor='#A29BFE';
+    };
+    si.appendChild(d);
+  });
+  ['good','bad'].forEach(bin=>{
+    document.getElementById('bin-'+bin).onclick=()=>{
+      if(selIdx===null){toast('請先點選一個行為！');return;}
+      const item=all[selIdx];
+      const isCorrect=item.correct===bin;
+      placed[selIdx]=bin;
+      const d=document.getElementById('si-'+selIdx);
+      d.classList.add('placed-'+(isCorrect?item.correct:'bad'));
+      d.style.borderColor='';
+      if(isCorrect)correct++;
+      document.getElementById('sort-score').textContent=`已分類：${Object.keys(placed).length}/${all.length} · 正確：${correct}`;
+      if(Object.keys(placed).length>=all.length){
+        document.getElementById('sort-btn').innerHTML=`<button class="btn" style="--acc:#FFA726" onclick="addXP(${a.xp},'${aid}')">🎉 分類完成！答對 ${correct}/${all.length}</button>`;
+      }
+      selIdx=null;
+    };
+  });
+}
+
+// ═══════════════════════════════
+// ACTIVITY: PEACE MAKER
+// ═══════════════════════════════
+function renderPeace(c,aid){
+  const a=ACTS[aid];
+  const steps=[
+    {col:'#FF6B9D',title:'1. 冷靜下來',q:'先深呼吸，讓自己冷靜。你現在的感受是什麼？',ph:'例如：我覺得很生氣，因為朋友拿了我的東西沒還'},
+    {col:'#FFA726',title:'2. 說出感受',q:'用「我」開頭，說出你的感受，不攻擊對方。',ph:'例如：我覺得不開心，因為你沒有詢問就拿走我的東西'},
+    {col:'#51CF66',title:'3. 聆聽對方',q:'讓對方也說說他的想法和感受，不打斷。',ph:'例如：他說他以為我不要了，他不是故意的'},
+    {col:'#4ECDC4',title:'4. 找到解決方法',q:'一起想一個對兩個人都好的解決方式。',ph:'例如：我們決定下次他要借東西前先問我，我也會更清楚說明'},
+    {col:'#A29BFE',title:'5. 握手和好',q:'雙方同意後，說「對不起」和「沒關係」，重新開始！',ph:'例如：我們都道了歉，決定以後更好地溝通'},
+  ];
+  c.innerHTML=`<div class="card"><p style="font-size:.88rem;color:#666;line-height:1.65">衝突是正常的！學習用這5個步驟，讓衝突變成讓關係更好的機會。</p></div>
+    <div class="pm-steps">${steps.map((s,i)=>`
+      <div class="pm-step" style="border-left-color:${s.col}">
+        <h4 style="color:${s.col}">${s.title}</h4>
+        <p>${s.q}</p>
+        <textarea class="ps-field" id="pm${i}" placeholder="${s.ph}" style="min-height:65px"></textarea>
+      </div>`).join('')}</div>
+    <div class="btn-row"><button class="btn" style="--acc:#FFA726" onclick="checkPeace('${aid}')">✅ 我的和平計畫完成了！</button></div>`;
+  window.checkPeace=function(aid){
+    const filled=[...document.querySelectorAll('[id^="pm"]')].filter(x=>x.value.trim()).length;
+    if(filled<3){toast('請至少填寫3個步驟！');return;}
+    addXP(ACTS[aid].xp,aid);
+  };
+}
+
+// ═══════════════════════════════
+// ACTIVITY: DECISION TREE
+// ═══════════════════════════════
+function renderDecision(c,aid){
+  const a=ACTS[aid];
+  let tIdx=0,path=[];
+  function render(){
+    const dt=DECISION_TREES[tIdx];
+    c.innerHTML=`<div class="card"><p style="font-size:.88rem;color:#666;line-height:1.65">在做決定之前，先想想：這樣做對嗎？對誰有影響？有沒有更好的方式？</p></div>
+      <div class="dt-node">
+        <div style="background:#F0F4FF;border-radius:12px;padding:13px;font-size:.9rem;color:#333;line-height:1.7;margin-bottom:14px">🎬 ${dt.story}</div>
+        <div class="dt-q">${dt.q1}</div>
+        ${dt.c1.map((ch,i)=>`<button class="cb" onclick="pickDT(${i},'${ch.path}','${ch.fb}')">${ch.t}</button>`).join('')}
+        <div class="fb" id="dt-fb"></div>
+        <div class="dt-path" id="dt-path">${path.map(p=>`<div class="dt-step">${p}</div>`).join('')}</div>
+      </div>
+      <div id="dt-outcome"></div>
+      <div class="btn-row" id="dt-btn"></div>`;
+  }
+  window.pickDT=function(i,pathType,fb){
+    document.querySelectorAll('.dt-node .cb').forEach(b=>b.disabled=true);
+    const btn=document.querySelectorAll('.dt-node .cb')[i];
+    const dt=DECISION_TREES[tIdx];
+    const out=dt.outcomes[pathType];
+    btn.classList.add(pathType==='good'?'correct':pathType==='neutral'?'neutral':'wrong');
+    const fbEl=document.getElementById('dt-fb');
+    fbEl.textContent=fb;fbEl.classList.add('show');
+    setTimeout(()=>{
+      path.push(btn.textContent.slice(2,10)+'…');
+      document.getElementById('dt-outcome').innerHTML=`<div class="dt-outcome ${out.c==='good'?'good':out.c==='warn'?'warn':'bad'}">${out.t}</div>`;
+      let btnHtml='';
+      if(tIdx<DECISION_TREES.length-1)btnHtml+=`<button class="btn2" onclick="nextDT()">下一個情境</button>`;
+      btnHtml+=`<button class="btn" style="--acc:#66BB6A" onclick="addXP(${a.xp},'${aid}')">✅ 完成！</button>`;
+      document.getElementById('dt-btn').innerHTML=btnHtml;
+    },1600);
+  };
+  window.nextDT=function(){tIdx=(tIdx+1)%DECISION_TREES.length;path=[];render()};
+  render();
+}
+
+// ═══════════════════════════════
+// ACTIVITY: CONSEQUENCE
+// ═══════════════════════════════
+function renderConsequence(c,aid){
+  const a=ACTS[aid];
+  let cIdx=0;
+  function render(){
+    const cw=CONSEQUENCES[cIdx];
+    c.innerHTML=`<div class="card"><p style="font-size:.88rem;color:#666;line-height:1.65">一個決定會像石頭丟進水裡，產生漣漪，影響許多人。看看不同行動的後果！</p></div>
+      <div class="card">
+        <div class="cw-center"><div class="cw-action" style="--acc:#66BB6A">🎯 ${cw.action}</div></div>
+        <div style="font-size:.85rem;font-weight:700;color:#888;text-align:center;margin-bottom:12px">這個行動會如何影響周圍的人？</div>
+        <div class="rpl-grid" id="rpl-grid"></div>
+        <div class="btn-row" style="margin-top:14px;justify-content:center">
+          ${cIdx<CONSEQUENCES.length-1?`<button class="btn2" onclick="nextCons()">看下一個情境</button>`:''}
+          <button class="btn" style="--acc:#66BB6A" onclick="addXP(${a.xp},'${aid}')">✅ 我了解後果漣漪！</button>
+        </div>
+      </div>`;
+    const grid=document.getElementById('rpl-grid');
+    cw.ripples.forEach((r,i)=>{
+      const d=document.createElement('div');
+      d.className='rpl';
+      d.style.borderLeftColor=r.color;
+      d.innerHTML=`<div class="rw">${r.who}</div><div class="re">${r.effect}</div>`;
+      grid.appendChild(d);
+      setTimeout(()=>d.classList.add('show'),i*250);
+    });
+  }
+  window.nextCons=function(){cIdx=(cIdx+1)%CONSEQUENCES.length;render()};
+  render();
+}
+
+// ═══════════════════════════════
+// ACTIVITY: PROBLEM SOLVE
+// ═══════════════════════════════
+function renderProblemSolve(c,aid){
+  const a=ACTS[aid];
+  const steps=[
+    {n:'說明問題',q:'問題是什麼？用一句話描述。',ph:'例如：我和朋友為了誰先玩電腦吵架了'},
+    {n:'想選項',q:'列出至少3種解決方法（先不評判好壞）。',ph:'例如：1.猜拳決定 2.輪流各玩30分鐘 3.請大人幫忙'},
+    {n:'評估後果',q:'每個方法的好處和壞處是什麼？',ph:'例如：猜拳快但不一定公平；輪流麻煩但對兩人都公平'},
+    {n:'做出選擇',q:'你認為哪個方法最好？為什麼？',ph:'例如：我選輪流，因為對大家都公平'},
+    {n:'行動與反思',q:'做了之後，結果如何？有沒有需要調整的？',ph:'例如：我們輪流了，感覺好多了，下次還會用這個方法'},
+  ];
+  c.innerHTML=`<div class="card"><p style="font-size:.88rem;color:#666;line-height:1.65">學習5步驟解決問題，這個方法可以用在生活中各種困難！</p></div>
+    <div class="ps-steps">${steps.map((s,i)=>`
+      <div class="ps-step">
+        <div class="ps-num">${i+1}</div>
+        <div style="flex:1">
+          <div class="ps-title">${s.n}</div>
+          <div style="font-size:.82rem;color:#888;margin:3px 0 7px">${s.q}</div>
+          <textarea class="ps-field" id="ps${i}" placeholder="${s.ph}"></textarea>
+        </div>
+      </div>`).join('')}</div>
+    <div class="btn-row"><button class="btn" style="--acc:#66BB6A" onclick="checkPS('${aid}')">✅ 我的問題解決方案完成！</button></div>`;
+  window.checkPS=function(aid){
+    const filled=[...document.querySelectorAll('[id^="ps"]')].filter(x=>x.value.trim()).length;
+    if(filled<4){toast('請至少填寫4個步驟！');return;}
+    addXP(ACTS[aid].xp,aid);
+  };
+}
+
+// ═══════════════════════════════
+// ACHIEVEMENT PAGE
+// ═══════════════════════════════
+function renderAchieve(){
+  const lv=getLv();
+  const totalActs=Object.keys(ACTS).length;
+  document.getElementById('ach-stats').innerHTML=`
+    <div class="st-card"><div class="st-num" style="color:#F59E0B">${S.xp}</div><div class="st-lbl">總XP</div></div>
+    <div class="st-card"><div class="st-num" style="color:#51CF66">${S.done.length}</div><div class="st-lbl">完成活動</div></div>
+    <div class="st-card"><div class="st-num" style="color:#A29BFE">${S.badges.length}</div><div class="st-lbl">獲得獎章</div></div>`;
+  const dp=document.getElementById('domain-prog');
+  dp.innerHTML='';
+  DOMAINS.forEach(d=>{
+    const done=d.activities.filter(a=>S.done.includes(a)).length;
+    const pct=Math.round(done/d.activities.length*100);
+    dp.innerHTML+=`<div class="dp-row">
+      <div class="dp-icon">${d.emoji}</div>
+      <div class="dp-label">${d.name}</div>
+      <div class="dp-bar"><div class="dp-fill" style="width:${pct}%;background:${d.color}"></div></div>
+      <div class="dp-pct">${pct}%</div>
+    </div>`;
+  });
+  const bg=document.getElementById('bdg-grid');
+  bg.innerHTML='';
+  BADGES.forEach(b=>{
+    const earned=S.badges.includes(b.k);
+    bg.innerHTML+=`<div class="bdg${earned?'':' locked'}">
+      <div class="be">${b.e}</div>
+      <div class="bn2">${b.n}</div>
+      <div class="bd">${b.d}</div>
+      ${earned?'<div class="bk">✅ 已獲得</div>':'<div style="font-size:.7rem;color:#ccc">🔒 未解鎖</div>'}
+    </div>`;
+  });
+}
+
+// ═══════════════════════════════
+// INIT
+// ═══════════════════════════════
+updateHome();
+document.getElementById('xp-val').textContent=S.xp;
+</script>
+</body>
+</html>
