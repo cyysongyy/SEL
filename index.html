@@ -334,6 +334,25 @@ body.lang-en .ew .en-sub{font-size:.74rem}
 </head>
 <body>
 
+<!-- NAME PICKER (after language chosen) -->
+<div id="name-picker" style="position:fixed;inset:0;background:linear-gradient(135deg,#667EEA,#764BA2);z-index:490;display:none;align-items:center;justify-content:center;padding:24px">
+  <div class="lp-box">
+    <div class="lp-logo">👋</div>
+    <h2 style="margin-bottom:4px"><span class="zh">你好！</span><span class="en-sub">Hello!</span></h2>
+    <div class="lp-sub"><span class="zh">請輸入你的名字，老師可以看到你的學習進度</span><span class="en-sub">Enter your name so your teacher can track your progress</span></div>
+    <input id="name-input" type="text" maxlength="20"
+      style="width:100%;border:2px solid #E0E0E0;border-radius:12px;padding:13px 15px;font-size:1rem;font-family:inherit;outline:none;margin:18px 0 14px;transition:border-color .2s"
+      onfocus="this.style.borderColor='#667EEA'" onblur="this.style.borderColor='#E0E0E0'"
+      onkeydown="if(event.key==='Enter')submitName()">
+    <button class="lp-btn en-btn" onclick="submitName()" style="width:100%">
+      <span class="lb-flag">🚀</span>
+      <div class="lb-txt">
+        <div class="lb-main"><span class="zh">開始冒險！</span><span class="en-sub">Start!</span></div>
+      </div>
+    </button>
+  </div>
+</div>
+
 <!-- LANGUAGE PICKER (first visit) -->
 <div id="lang-picker">
   <div class="lp-box">
@@ -926,6 +945,34 @@ function dlgSpeak(idx,arr){
 function isEN(){return document.body.classList.contains('lang-en');}
 function t(zh,en){return isEN()?en:zh;}
 
+const SHEET_URL='https://script.google.com/macros/s/AKfycbxABDthSEJo8myW7p08CpC8dD7TBHjxzu0_TD1wglfBtkmXepIUjGYpyQ-X7CpwVRHg/exec';
+
+function logToSheet(){
+  const lv=getLv();
+  fetch(SHEET_URL,{
+    method:'POST',
+    body:JSON.stringify({
+      name:S.name||'(anonymous)',
+      lang:S.lang||'zh',
+      level:lv.lv,
+      xp:S.xp,
+      done:S.done.length,
+      badges:S.badges.length,
+      streak:S.streak||0,
+    }),
+  }).catch(()=>{});
+}
+
+function submitName(){
+  const input=document.getElementById('name-input');
+  const name=(input?.value||'').trim();
+  if(!name){input.style.borderColor='#FF6B6B';input.placeholder=isEN()?'Please enter your name!':'請輸入名字！';return;}
+  S.name=name; save();
+  document.getElementById('name-picker').style.display='none';
+  updateHome();
+  logToSheet();
+}
+
 function chooseLang(lang){
   document.getElementById('lang-picker').style.display='none';
   S.lang=lang; save();
@@ -934,7 +981,16 @@ function chooseLang(lang){
     document.getElementById('lang-tog').classList.add('en');
     document.getElementById('lang-label').textContent='中';
   }
-  updateHome();
+  // show name picker if no name yet
+  if(!S.name){
+    const np=document.getElementById('name-picker');
+    np.style.display='flex';
+    const inp=document.getElementById('name-input');
+    inp.placeholder=isEN()?'e.g. Amy':'例如：小明';
+    inp.focus();
+  } else {
+    updateHome();
+  }
 }
 
 function toggleLang(){
@@ -2193,16 +2249,31 @@ function renderAchieve(){
 // ═══════════════════════════════
 // INIT
 // ═══════════════════════════════
-// restore saved language
 if(S.lang==='en'){
   document.body.classList.add('lang-en');
   document.getElementById('lang-tog').classList.add('en');
   document.getElementById('lang-label').textContent='中';
-  document.getElementById('lang-picker').style.display='none';
-} else if(S.lang==='zh'){
-  document.getElementById('lang-picker').style.display='none';
 }
-// else: no saved lang → show picker
+if(S.lang){
+  // language already chosen — hide lang picker
+  document.getElementById('lang-picker').style.display='none';
+  if(!S.name){
+    // no name yet — show name picker
+    const np=document.getElementById('name-picker');
+    np.style.display='flex';
+    const inp=document.getElementById('name-input');
+    inp.placeholder=isEN()?'e.g. Amy':'例如：小明';
+    setTimeout(()=>inp.focus(),300);
+  } else {
+    // returning user — log daily visit if new day
+    const today=new Date().toDateString();
+    if(S.lastLog!==today){
+      S.lastLog=today; save();
+      logToSheet();
+    }
+  }
+}
+// else: no saved lang → show lang picker (default)
 
 updateHome();
 document.getElementById('xp-val').textContent=S.xp;
